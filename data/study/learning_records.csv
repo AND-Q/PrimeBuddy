@@ -1,0 +1,6 @@
+date,user_id,subject,chapter,duration_minutes,task_type,completed,notes
+2026-05-11,demo_user,操作系统,虚拟内存,90,知识复习,true,完成分页、分段、缺页中断基础复习
+2026-05-12,demo_user,计算机网络,TCP 拥塞控制,75,错题复盘,true,慢开始和拥塞避免阈值变化仍需加强
+2026-05-13,demo_user,数据结构,图的最短路径,60,刷题,false,Dijkstra 与 Floyd 适用场景混淆
+2026-05-14,demo_user,计算机组成原理,Cache 映射,80,知识复习,true,直接映射和组相联映射地址划分需要继续练习
+2026-05-15,demo_user,操作系统,进程同步,70,刷题,true,PV 操作题正确率提升但读者写者问题仍不稳定

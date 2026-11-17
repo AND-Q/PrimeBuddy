@@ -1,0 +1,5 @@
+id,date,user_id,subject,chapter,question,user_answer,correct_answer,error_reason,knowledge_point,status
+M001,2026-05-12,demo_user,计算机网络,TCP 拥塞控制,慢开始和拥塞避免阶段窗口如何变化,认为两个阶段都是指数增长,慢开始指数增长而拥塞避免线性增长,概念混淆,TCP 拥塞窗口变化,待二刷
+M002,2026-05-13,demo_user,数据结构,最短路径,Dijkstra 算法是否能处理负权边,可以处理负权边,不能处理负权边,算法适用条件不清,Dijkstra 适用条件,待复习
+M003,2026-05-14,demo_user,计算机组成原理,Cache,组相联映射地址字段如何划分,混淆组号和块内地址,标记字段+组号+块内地址,地址划分不熟,Cache 地址映射,已复习
+M004,2026-05-15,demo_user,操作系统,进程同步,读者写者问题中写者互斥如何保证,只给读者加互斥,需要保证写者与其他读者/写者互斥,同步互斥关系混淆,读者写者问题,待二刷

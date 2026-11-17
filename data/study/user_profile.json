@@ -1,0 +1,12 @@
+{
+  "user_id": "demo_user",
+  "name": "PrimeBuddy Demo Learner",
+  "exam": "408 考研",
+  "exam_date": "2026-12-20",
+  "target_score": 120,
+  "current_estimated_score": 85,
+  "daily_available_hours": 3,
+  "current_stage": "强化阶段",
+  "weak_subjects": ["操作系统", "计算机网络"],
+  "preferred_style": "计划清晰、任务可执行、每周复盘"
+}

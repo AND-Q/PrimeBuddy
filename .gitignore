@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+
+# macOS and editor metadata
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# Runtime output
+logs/
+chroma_db/
+*.log
+
+# Generated indexing state
+md5.text
+md5_*.text
+
+# Large source materials and generated OCR artifacts
+data/raw/
+data/408/*.txt
+!data/408/.gitkeep
+
+# Local/generated auxiliary data
+.firecrawl/
