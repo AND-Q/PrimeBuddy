@@ -919,8 +919,8 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 ```text
 PrimeBuddy/
 ├── pyproject.toml  uv.lock  docker-compose.yml  .env.example  README.md
-├── AGENTS.md                      # 编码 Agent 指南，每个阶段结束后更新
-├── CLAUDE.md                      # 只保留一行 @AGENTS.md
+├── CLAUDE.md                      # 编码 Agent 指南，每个阶段结束后更新
+├── AGENTS.md                      # 只保留一行 @CLAUDE.md
 ├── config/
 │   ├── settings.yml               # ← rag.yml、chroma.yml 中仍需要的项
 │   └── mcp.json                   # MCP server 白名单
@@ -966,7 +966,7 @@ PrimeBuddy/
 
 ### 16.1 可以立即删除（阶段 0，已完成）
 
-以下文件已用 grep 确认没有被主流程引用。处理完运行导入与 prompt 检查和端到端冒烟（命令见 `AGENTS.md` 第二部分），确认旧系统行为不变。
+以下文件已用 grep 确认没有被主流程引用。处理完运行导入与 prompt 检查和端到端冒烟（命令见 `CLAUDE.md` 第二部分），确认旧系统行为不变。
 
 | 路径                                                                                                                                                            | 处理                                         | 依据                                                         |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
@@ -1081,7 +1081,7 @@ PrimeBuddy/
 
 - [ ] 5.1 `docker-compose.yml`（`api` + 带 pgvector 的 Postgres，可选 `otel-collector`）、`.env.example`、示例语料和种子数据；把 `PRIMEBUDDY_DATABASE_URL` 切到 Postgres，跑通迁移、摄入和集成测试。
 - [ ] 5.2 GitHub Actions：ruff；单元和集成测试（SQLite 和 Postgres 服务容器各一次）；评测冒烟子集，按 `evals/thresholds.yml` 判定。
-- [ ] 5.3 README：定位、架构图、评测指标表（v1 vs v2）、演示 GIF、快速开始（本地模式和 Docker 模式）；更新 `AGENTS.md`，`CLAUDE.md` 改为引用它。
+- [ ] 5.3 README：定位、架构图、评测指标表（v1 vs v2）、演示 GIF、快速开始（本地模式和 Docker 模式）；更新 `CLAUDE.md`（`AGENTS.md` 只引用它）。
 - [ ] 5.4 用评测数据更新简历描述。
 
 完成标志：干净环境里，本地模式执行 `uv sync` 和两条脚本就能跑起来，Docker 模式执行 `docker compose up` 和两条脚本就能跑起来；CI 通过；README 里的每个数字都能在 `evals/reports/` 找到对应报告。
