@@ -13,7 +13,7 @@
 
   - ✅ 16.1 里要注意的两处：`rag/vector_store.py` 的 `__main__` 只删检索"迷路"的几行，保留 `load_document()`（目前唯一的建索引入口）；`main_prompt.txt`、`report_prompt.txt` 留到阶段 1，写人设和周报提示词时参考；
 
-  - ✅ 补写 `AGENTS.md` 第二部分：运行、测试、建索引的命令和目录说明，之后每个阶段结束时更新；`CLAUDE.md` 改成一行 `@AGENTS.md`，只维护一份；
+  - ✅ 补写 `CLAUDE.md` 第二部分：运行、测试、建索引的命令和目录说明，之后每个阶段结束时更新；`AGENTS.md` 改成一行 `@CLAUDE.md`，只维护一份；
 
   - ✅ 四个专家模块能导入，保留的 5 个 prompt 都能读到（命令见下）；`scripts/streamlit_ui_smoke.py` 端到端冒烟通过。旧的单元测试已删除，新测试从阶段 1 起补写。
 
@@ -240,5 +240,5 @@
   - 整理对外展示的材料（17）。
 - **需要做到**：
   - README 包含定位、架构图、v1/v2 指标表、演示 GIF，以及本地和 Docker 两种快速开始；
-  - `AGENTS.md` 第二部分按新架构重写；
+  - `CLAUDE.md` 第二部分按新架构重写；
   - 简历里的每个数字都能在 `evals/reports/` 找到对应报告。
