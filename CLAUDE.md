@@ -84,25 +84,27 @@ This file provides guidance to Claude Code (claude.ai/code) and other coding age
 - 旧模块按设计 16.2 的时机删除，不要提前删：`utils/`、`model/`、`config/*.yml` 到阶段 2 才删（旧 RAG 依赖它们）；`prompts/main_prompt.txt`、`prompts/report_prompt.txt` 已不被加载，保留给阶段 1 参考。
 
 ## 2. 环境
-- conda 环境 `agent`（Python 3.11），命令统一用 `conda run -n agent <command>`；依赖用 `pip install -r requirement.txt` 安装（阶段 0 会改为 `pyproject.toml` + uv）。
+- 依赖在 `pyproject.toml` 中声明，版本锁定在 `uv.lock`；Python 3.11（`.python-version`）。`uv sync` 安装到项目的 `.venv/`，命令统一用 `uv run <command>`。增删依赖用 `uv add` / `uv remove`，不要手改 `uv.lock`。
 - 环境变量：`MY_API_KEY`、`MY_BASE_URL`（OpenAI 兼容接口），`DASHSCOPE_API_KEY`（Embedding）。聊天模型名只从 `config/rag.yml` 的 `chat_model_name` 读取，环境变量 `MY_MODEL` 不生效。
 - 环境变量写在用户的 `~/.zshrc` 里，Agent 的终端可能还是旧值。需要调用模型时用 `zsh -lic '<command>'` 加载；不要打印 key 的值。
 
 ## 3. 常用命令
 ```bash
 # 启动应用
-conda run -n agent streamlit run app.py
+uv run streamlit run app.py
 
 # 修改 data/408 后增量建索引（按文件 MD5 去重，记录在 md5.text）
-conda run -n agent python rag/vector_store.py
+uv run python rag/vector_store.py
 
 # 导入与 prompt 检查：四个专家模块能导入、5 个 prompt 能读取，不需要模型 key
-conda run -n agent python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
+uv run python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
 
 # 端到端冒烟：用真实模型跑 4 个演示问题（约 3 分钟），并检查没有写入错题和周报数据
-conda run -n agent python scripts/streamlit_ui_smoke.py
+uv run python scripts/streamlit_ui_smoke.py
+# 静态检查（规则见 ruff.toml，只查真错误、不查风格）
+uv run ruff check .
 ```
-- 目前没有单元测试：旧测试已删除，新测试从阶段 1 起按设计 14.3 补写。在此之前，改动后至少跑导入与 prompt 检查；涉及模型调用、工具或 RAG 的改动再跑端到端冒烟。
+- 目前没有单元测试：旧测试已删除，新测试从阶段 1 起按设计 14.3 补写。在此之前，改动后至少跑 `ruff check` 和导入与 prompt 检查；涉及模型调用、工具或 RAG 的改动再跑端到端冒烟。
 
 ## 4. 代码结构（旧系统）
 - 调用链：`app.py` → `agent/study_supervisor.py`（关键词路由，专家按需创建）→ `agent/specialists/`（4 个专家，`create_agent` + `agent/tools/middleware.py`）→ `agent/tools/`（检索、学习记录、错题、周报工具）。

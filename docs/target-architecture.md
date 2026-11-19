@@ -679,7 +679,7 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 | 知识库向量                         | Chroma（`chroma_db/`）                                | 同左                                                        |
 
 - `settings.py` 从同一个连接串推导各组件需要的格式：LangGraph 的 SQLite 组件要文件路径，Postgres 组件要 `postgresql://` URI，SQLAlchemy 要带驱动名的 URL。
-- 已验证：用本机 conda 的 Python（sqlite 3.51.2）在临时环境里装 `langgraph-checkpoint-sqlite` 3.1.3，`AsyncSqliteSaver` 可用，带向量索引的 `AsyncSqliteStore` 语义检索返回了正确结果。sqlite-vec 是 SQLite 扩展，要求 Python 的 `sqlite3` 支持加载扩展；换 Python 发行版时先确认 `sqlite3.connect(":memory:").enable_load_extension` 存在。
+- 已验证：用本机 conda 的 Python（sqlite 3.51.2）在临时环境里装 `langgraph-checkpoint-sqlite` 3.1.3，`AsyncSqliteSaver` 可用，带向量索引的 `AsyncSqliteStore` 语义检索返回了正确结果。改用 uv 后，uv 的 Python 3.11.18（sqlite 3.53.1）也能加载 sqlite-vec 0.1.9。sqlite-vec 是 SQLite 扩展，要求 Python 的 `sqlite3` 支持加载扩展；换 Python 发行版时先确认 `sqlite3.connect(":memory:").enable_load_extension` 存在。
 - SQLite 开启 WAL，只跑一个进程（uvicorn 单 worker，调度器在同一进程）。多进程部署时用 Postgres。
 - 数据库文件放在 `data/primebuddy.db`，`.gitignore` 加入 `data/*.db*`。
 - CI 的集成测试对两种后端各跑一次（Postgres 用 GitHub Actions 的 service container）。
@@ -863,7 +863,7 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 14.1 依赖
 
-使用 `pyproject.toml` + `uv.lock`（本机已安装 uv；继续用 conda 也可以，pip 能直接安装 pyproject 项目）。Python 沿用 3.11。
+使用 `pyproject.toml` + `uv.lock`，`uv sync` 安装到项目的 `.venv/`，不再使用 conda。Python 沿用 3.11（`.python-version`）。
 
 | 用途                | 包                                                                                                | 约束（括号内为 2026-11-17 PyPI 最新版） |
 | ------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------- |
@@ -1023,9 +1023,9 @@ PrimeBuddy/
 
 ### 阶段 0：清理与基线（2–3 天）
 
-- [x] 0.1 直接在 `main` 上重构，不另开分支；重构前可演示的旧版本是提交 `228bd9c`。
-- [x] 0.2 按 16.1 删除，再做导入与 prompt 检查和端到端冒烟。
-- [ ] 0.3 新增 `pyproject.toml` 并锁定依赖，升级到 langchain 1.5.x，删除 `requirement.txt`，加入 `ruff` 配置；升级后重跑导入与 prompt 检查和端到端冒烟。
+- [X] 0.1 直接在 `main` 上重构，不另开分支；重构前可演示的旧版本是提交 `228bd9c`。
+- [X] 0.2 按 16.1 删除，再做导入与 prompt 检查和端到端冒烟。
+- [X] 0.3 新增 `pyproject.toml` 并锁定依赖，升级到 langchain 1.5.x，删除 `requirement.txt`，加入 `ruff` 配置；升级后重跑导入与 prompt 检查和端到端冒烟。
 - [ ] 0.4 配置 LangSmith 环境变量，确认现有系统的运行能在 trace 里看到。
 - [ ] 0.5 建 `evals/` 骨架、`targets/v1.py`，以及第一版数据集（技能选择 60 条、检索 50 条）。
 - [ ] 0.6 跑出 v1 基线，报告提交到 `evals/reports/`。
@@ -1100,7 +1100,7 @@ PrimeBuddy/
 | OTel GenAI 语义约定仍是 Development，名称可能变                       | 锁定埋点库版本；名称常量集中在 `observability.py`                                        |
 | LangChain 埋点重复                                                    | 方案 A 和方案 B 只启用一个                                                                 |
 | SQLite 只适合单进程                                                   | uvicorn 单 worker + WAL；多进程部署切 Postgres；CI 对两种后端都跑集成测试                  |
-| Python 的 `sqlite3` 不支持加载扩展时，SQLite Store 的向量检索不可用 | 本机 conda Python 已验证可用；换环境时先检查 `enable_load_extension`                     |
+| Python 的 `sqlite3` 不支持加载扩展时，SQLite Store 的向量检索不可用 | 本机 uv 管理的 Python 已验证可用；换环境时先检查 `enable_load_extension`                     |
 | 评测要花模型调用费用                                                  | 完整评测按阶段跑；CI 只跑冒烟子集；LLM-as-judge 先抽样人工核对                             |
 | 中文 BM25 分词效果一般                                                | jieba 加 408 术语词典；以检索评测结果为准调整                                              |
 | 前缀缓存是否生效取决于供应商                                          | 只作为优化项，不列入必达指标                                                               |

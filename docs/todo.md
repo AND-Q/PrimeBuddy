@@ -18,10 +18,10 @@
   - ✅ 四个专家模块能导入，保留的 5 个 prompt 都能读到（命令见下）；`scripts/streamlit_ui_smoke.py` 端到端冒烟通过。旧的单元测试已删除，新测试从阶段 1 起补写。
 
     ```bash
-    conda run -n agent python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
+    uv run python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
     ```
 
-## [ ] 阶段 0 · 锁定依赖并升级 LangChain
+## [x] 阶段 0 · 锁定依赖并升级 LangChain
 
 - **需求描述**：
   - 用 `pyproject.toml` + `uv.lock` 替换不锁版本的 `requirement.txt`，升级到 langchain 1.5.x（14.1）。

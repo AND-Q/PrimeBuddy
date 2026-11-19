@@ -1,0 +1,9 @@
+# Ruff 配置：https://docs.astral.sh/ruff/configuration/
+# 只开启能抓出真错误的规则，不检查风格。旧代码（agent/、rag/、utils/、model/）
+# 会在阶段 1–2 重写，这一阶段不为了消除告警去改动它们。
+target-version = "py311"
+
+[lint]
+# E4/E7/E9 是导入与语句级错误，F 是 Pyflakes 那一套：
+# 未定义名字、未使用的导入和变量、重复定义、f-string 占位符问题等。
+select = ["E4", "E7", "E9", "F"]
