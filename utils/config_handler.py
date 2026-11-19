@@ -32,7 +32,3 @@ def load_prompts_config(config_path: str = get_abs_path("config/prompts.yml"), e
 rag_conf = load_rag_config()  # 相当于是接收这个字典
 chroma_conf = load_chroma_config()
 prompts_conf = load_prompts_config()
-
-
-if __name__ == '__main__':
-    print(rag_conf["chat_model_name"])

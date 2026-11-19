@@ -105,8 +105,3 @@ class StudyCopilotSupervisor:
 
         # 保持流式输出能力，由具体专家 Agent 逐段返回结果。
         yield from agent.execute_stream(query, user_id=user_id)
-
-
-if __name__ == '__main__':
-    supervisor = StudyCopilotSupervisor()
-    print(supervisor.route("请生成我的本周学习报告").route)

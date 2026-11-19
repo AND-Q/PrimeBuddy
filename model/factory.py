@@ -45,16 +45,3 @@ def get_chat_model() -> BaseChatModel:
 @lru_cache(maxsize=1)
 def get_embed_model() -> Embeddings:
     return EmbeddingsFactory().generator()
-
-
-# if __name__ == "__main__":
-#     my_api_key = os.getenv("MY_API_KEY")
-#     my_base_url = os.getenv("MY_BASE_URL")
-
-#     print(f"MY_BASE_URL: {my_base_url}")
-#     print(f"MY_API_KEY:  {my_api_key}")
-
-#     response = chat_model.invoke("请用一句中文回答：大模型连接测试成功了吗？")
-#     print(response.content)
-
-# python -m model.factory
