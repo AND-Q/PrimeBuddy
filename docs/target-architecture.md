@@ -7,15 +7,15 @@
 
 ## 0. 背景：当前系统的主要问题
 
-| 问题 | 现状证据 |
-|---|---|
-| 无状态单轮 | 专家 Agent 只收到当前一句话，没有 `thread_id`；prompt 里的"信息不足先追问"无法接上下一轮 |
-| 关键词路由 | 8 条口语化问题中 6 条路由错误；4 个专家类几乎逐行相同，只差 prompt 和工具 |
-| 身份和写操作由模型决定 | 5 月 15 日日志：模型自行把 `user_id` 填成 `default_user`，在用户没有要求时保存了周报；`confirm_save` 也由模型填写 |
-| 必需的数据靠模型自觉读取 | 6 次周报请求中 4 次没有读取周报数据；3 次计划请求都没有调用任何工具 |
-| RAG 嵌套调用模型、丢失出处 | 检索工具内部再调一次模型做总结，耗时 3.5–26 秒；57% 的切片没有页码 |
-| 假流式 | 拿到完整回答后由前端 `time.sleep` 逐字输出 |
-| 没有评测和追踪 | 19 个单测只覆盖 CSV 读写和关键词表 |
+| 问题                       | 现状证据                                                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 无状态单轮                 | 专家 Agent 只收到当前一句话，没有 `thread_id`；prompt 里的"信息不足先追问"无法接上下一轮                              |
+| 关键词路由                 | 8 条口语化问题中 6 条路由错误；4 个专家类几乎逐行相同，只差 prompt 和工具                                               |
+| 身份和写操作由模型决定     | 5 月 15 日日志：模型自行把 `user_id` 填成 `default_user`，在用户没有要求时保存了周报；`confirm_save` 也由模型填写 |
+| 必需的数据靠模型自觉读取   | 6 次周报请求中 4 次没有读取周报数据；3 次计划请求都没有调用任何工具                                                     |
+| RAG 嵌套调用模型、丢失出处 | 检索工具内部再调一次模型做总结，耗时 3.5–26 秒；57% 的切片没有页码                                                     |
+| 假流式                     | 拿到完整回答后由前端 `time.sleep` 逐字输出                                                                            |
+| 没有评测和追踪             | 19 个单测只覆盖 CSV 读写和关键词表                                                                                      |
 
 ---
 
@@ -27,15 +27,15 @@ PrimeBuddy 是一个面向"学习与成长"的个人 Agent：记得住用户、�
 
 ### 1.2 能力与工程要求
 
-| 类别 | 内容 | 章节 |
-|---|---|---|
-| 能力 | 多轮对话与长期记忆 | 5、6 |
-| 能力 | 主动执行：每日复习、周报草稿 | 4.5、11 |
-| 能力 | 可插拔技能包：新增领域不改编排代码 | 4.3 |
-| 能力 | 开放工具接入：消费外部 MCP server，也把自身能力发布成 MCP server | 12 |
-| 工程 | 身份不经过模型；业务数据写入经用户审批 | 5.1、7.2 |
-| 工程 | 步骤固定的流程由代码保证执行，模型只负责生成内容 | 4.5 |
-| 工程 | 每项能力都有评测和追踪，线上反馈回流到评测集 | 13 |
+| 类别 | 内容                                                             | 章节     |
+| ---- | ---------------------------------------------------------------- | -------- |
+| 能力 | 多轮对话与长期记忆                                               | 5、6     |
+| 能力 | 主动执行：每日复习、周报草稿                                     | 4.5、11  |
+| 能力 | 可插拔技能包：新增领域不改编排代码                               | 4.3      |
+| 能力 | 开放工具接入：消费外部 MCP server，也把自身能力发布成 MCP server | 12       |
+| 工程 | 身份不经过模型；业务数据写入经用户审批                           | 5.1、7.2 |
+| 工程 | 步骤固定的流程由代码保证执行，模型只负责生成内容                 | 4.5      |
+| 工程 | 每项能力都有评测和追踪，线上反馈回流到评测集                     | 13       |
 
 ### 1.3 范围
 
@@ -61,15 +61,15 @@ PrimeBuddy 是一个面向"学习与成长"的个人 Agent：记得住用户、�
 
 ### 3.1 分层
 
-| 层 | 组件 | 说明 |
-|---|---|---|
-| 接入 | Streamlit 客户端（后续可换 Next.js）、飞书/企业微信机器人、外部 MCP 客户端 | Web 通过服务层访问 Agent；外部 MCP 客户端调用 PrimeBuddy 的 MCP server；机器人先只接收推送 |
-| 服务 | FastAPI：会话、流式运行、审批恢复、反馈、记忆管理、文档上传；APScheduler 定时任务和一次性任务 | 鉴权得到 user_id |
-| Harness | `create_agent` 组装的主 Agent + 中间件 + checkpointer + store；手写 StateGraph 的确定性工作流 | 第 4、5 节 |
-| 能力 | Skills、原生工具、MCP 工具、子 Agent、工作流 | 第 4、7、12 节 |
-| 知识 | 摄入管线、增量索引、混合检索、rerank | 第 8 节 |
-| 数据 | SQLite（本地默认）或 Postgres（部署）：checkpoint、store、业务表；Chroma 向量库 | 第 6、9 节 |
-| 运维 | OpenTelemetry（trace、指标）、评测与反馈回流、CI、Docker Compose | 第 13、14 节 |
+| 层      | 组件                                                                                            | 说明                                                                                       |
+| ------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 接入    | Streamlit 客户端（后续可换 Next.js）、飞书/企业微信机器人、外部 MCP 客户端                      | Web 通过服务层访问 Agent；外部 MCP 客户端调用 PrimeBuddy 的 MCP server；机器人先只接收推送 |
+| 服务    | FastAPI：会话、流式运行、审批恢复、反馈、记忆管理、文档上传；APScheduler 定时任务和一次性任务   | 鉴权得到 user_id                                                                           |
+| Harness | `create_agent` 组装的主 Agent + 中间件 + checkpointer + store；手写 StateGraph 的确定性工作流 | 第 4、5 节                                                                                 |
+| 能力    | Skills、原生工具、MCP 工具、子 Agent、工作流                                                    | 第 4、7、12 节                                                                             |
+| 知识    | 摄入管线、增量索引、混合检索、rerank                                                            | 第 8 节                                                                                    |
+| 数据    | SQLite（本地默认）或 Postgres（部署）：checkpoint、store、业务表；Chroma 向量库                 | 第 6、9 节                                                                                 |
+| 运维    | OpenTelemetry（trace、指标）、评测与反馈回流、CI、Docker Compose                                | 第 13、14 节                                                                               |
 
 ### 3.2 架构图
 
@@ -216,12 +216,12 @@ skills/
 
 **408 技能包（由现有 prompt 迁移）**：
 
-| 技能 | 来源 | 用到的工具 |
-|---|---|---|
-| `explain-408` | `prompts/tutor_prompt.txt` | `search_knowledge`、`research` |
-| `study-plan` | `prompts/planner_prompt.txt` | `get_study_logs`、`mistake_stats`、`get_due_reviews` |
-| `mistake-review` | `prompts/mistake_prompt.txt` | `search_knowledge`、`query_mistakes`、`save_mistake`、`review_item` |
-| `weekly-report` | `prompts/study_report_prompt.txt`、`prompts/report_prompt.txt` | `generate_weekly_report`、`save_weekly_report` |
+| 技能               | 来源                                                               | 用到的工具                                                                  |
+| ------------------ | ------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `explain-408`    | `prompts/tutor_prompt.txt`                                       | `search_knowledge`、`research`                                          |
+| `study-plan`     | `prompts/planner_prompt.txt`                                     | `get_study_logs`、`mistake_stats`、`get_due_reviews`                  |
+| `mistake-review` | `prompts/mistake_prompt.txt`                                     | `search_knowledge`、`query_mistakes`、`save_mistake`、`review_item` |
+| `weekly-report`  | `prompts/study_report_prompt.txt`、`prompts/report_prompt.txt` | `generate_weekly_report`、`save_weekly_report`                          |
 
 - 迁移时删掉 prompt 里"只有用户明确要求才传 `confirm_save=true`"这类段落，改成"需要保存时直接调用写工具，执行前系统会请求用户审批"。
 - weekly-report 技能里写明：周报全文由前端按工具结果渲染成卡片（10.2），回答里只点评一两个重点并询问是否保存，不重复罗列数字。
@@ -259,8 +259,8 @@ metadata:
 - 包装成主 Agent 的工具；包装函数把 `runtime.context` 原样传给子 Agent，用 `response_format` 返回结构化结果。
 - 子 Agent 的模型加 `tags=["subagent"]`，服务层据此过滤 token（10.2）。
 
-| 子 Agent | 工具名 | 输入 | 输出（Pydantic） | 可用工具 |
-|---|---|---|---|---|
+| 子 Agent | 工具名       | 输入                       | 输出（Pydantic）                                     | 可用工具                                      |
+| -------- | ------------ | -------------------------- | ---------------------------------------------------- | --------------------------------------------- |
 | research | `research` | `question`、`subject?` | `ResearchBrief{answer, key_points[], citations[]}` | `search_knowledge`、白名单内的网页 MCP 工具 |
 
 周报在第 1 版设计里是子 Agent。它的步骤固定，现在改为工作流（4.5.1），读数据和核对数字由代码保证执行。
@@ -275,11 +275,11 @@ metadata:
 - LLM 节点的模型加 `tags=["workflow"]`，服务层不把这些 token 转发给前端（10.2）。
 - 每个工作流都能用桩函数替换 LLM 节点做单测（14.3）。
 
-| 工作流 | 入口 | 流程 | 用到的 LangGraph 能力 |
-|---|---|---|---|
-| `weekly_report` | 主 Agent 工具 `generate_weekly_report`；每周日定时任务 | resolve_week → collect →（无记录）empty_report /（有记录）analyze → validate →（不通过且不足 3 次）analyze /（否则）finalize | 条件边、校验回路、`RetryPolicy`、`context_schema` |
-| `daily_review` | 每天定时任务 | fetch_due →（无到期）结束 /（有到期）make_cards → push | 条件边 |
-| `memory_consolidation` | 每次运行正常结束后，服务层投递的一次性任务 | load_turn → extract →（无候选）结束 /（有候选）对每条用 `Send` 并行 reconcile → apply | `Send` 扇出、reducer 汇总、`runtime.store` |
+| 工作流                   | 入口                                                     | 流程                                                                                                                             | 用到的 LangGraph 能力                                 |
+| ------------------------ | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `weekly_report`        | 主 Agent 工具 `generate_weekly_report`；每周日定时任务 | resolve_week → collect →（无记录）empty_report /（有记录）analyze → validate →（不通过且不足 3 次）analyze /（否则）finalize | 条件边、校验回路、`RetryPolicy`、`context_schema` |
+| `daily_review`         | 每天定时任务                                             | fetch_due →（无到期）结束 /（有到期）make_cards → push                                                                         | 条件边                                                |
+| `memory_consolidation` | 每次运行正常结束后，服务层投递的一次性任务               | load_turn → extract →（无候选）结束 /（有候选）对每条用 `Send` 并行 reconcile → apply                                       | `Send` 扇出、reducer 汇总、`runtime.store`        |
 
 #### 4.5.1 周报工作流
 
@@ -325,14 +325,14 @@ class WeeklyReportState(TypedDict, total=False):
     report: WeeklyReport                 # 最终输出
 ```
 
-| 节点 | 类型 | 做什么 |
-|---|---|---|
+| 节点             | 类型 | 做什么                                                                                                    |
+| ---------------- | ---- | --------------------------------------------------------------------------------------------------------- |
 | `resolve_week` | 代码 | 按用户时区算周起止；当周没有记录时回退到最近有记录的一周（沿用现有 `resolve_report_week` 的逻辑和测试） |
-| `collect` | 代码 | 查学习记录、错题、到期复习和画像，算出 `stats`。阶段 1 仍读 CSV，由仓储层给学习记录生成 ID |
-| `empty_report` | 代码 | 一条记录都没有时，直接生成"本周没有记录"的周报，不调用模型 |
-| `analyze` | LLM | main 模型 + 结构化输出 `ReportNarrative`；重试时把上一次的 `issues` 一起交给模型 |
-| `validate` | 代码 | 按下面的规则检查 `narrative`，结果写入 `issues` |
-| `finalize` | 代码 | 组装 `WeeklyReport`：数字全部来自 `stats`，文字来自 `narrative` |
+| `collect`      | 代码 | 查学习记录、错题、到期复习和画像，算出 `stats`。阶段 1 仍读 CSV，由仓储层给学习记录生成 ID              |
+| `empty_report` | 代码 | 一条记录都没有时，直接生成"本周没有记录"的周报，不调用模型                                                |
+| `analyze`      | LLM  | main 模型 + 结构化输出 `ReportNarrative`；重试时把上一次的 `issues` 一起交给模型                      |
+| `validate`     | 代码 | 按下面的规则检查 `narrative`，结果写入 `issues`                                                       |
+| `finalize`     | 代码 | 组装 `WeeklyReport`：数字全部来自 `stats`，文字来自 `narrative`                                     |
 
 校验规则：
 
@@ -400,34 +400,34 @@ async def generate_weekly_report(
 
 #### 4.5.2 每日复习工作流
 
-| 节点 | 类型 | 做什么 |
-|---|---|---|
-| `fetch_due` | 代码 | 查 `due` 不晚于当前时间的 `review_items`，最多 10 条；没有就结束 |
-| `make_cards` | LLM | small 模型 + 结构化输出，为每条生成回忆提示（不直接给答案） |
-| `push` | 代码 | 渲染消息并推送；`audit_logs` 里已有当天的推送记录就跳过，重跑不会重复推送 |
+| 节点           | 类型 | 做什么                                                                      |
+| -------------- | ---- | --------------------------------------------------------------------------- |
+| `fetch_due`  | 代码 | 查 `due` 不晚于当前时间的 `review_items`，最多 10 条；没有就结束        |
+| `make_cards` | LLM  | small 模型 + 结构化输出，为每条生成回忆提示（不直接给答案）                 |
+| `push`       | 代码 | 渲染消息并推送；`audit_logs` 里已有当天的推送记录就跳过，重跑不会重复推送 |
 
 #### 4.5.3 记忆整理工作流
 
 节点见下表，写入规则见 6.3。编译时传入 `store`，节点通过 `runtime.store` 读写记忆。
 
-| 节点 | 类型 | 做什么 |
-|---|---|---|
-| `load_turn` | 代码 | 按 thread_id 和 checkpoint_id 用主 Agent 的 `aget_state` 读出本轮消息（最后一条用户消息之后的部分） |
-| `extract` | LLM | small 模型抽取候选记忆；没有候选就结束 |
-| `reconcile` | LLM | 由 `Send` 对每条候选并行执行：`store.asearch` 找最多 3 条相似记忆，small 模型在 ADD、UPDATE、DELETE、NOOP 中选一个 |
-| `apply` | 代码 | 所有分支结束后执行一次，处理 reducer（`operator.add`）汇总的操作：过滤敏感信息、写 Store、归档旧值、同步画像 |
+| 节点          | 类型 | 做什么                                                                                                                 |
+| ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------- |
+| `load_turn` | 代码 | 按 thread_id 和 checkpoint_id 用主 Agent 的 `aget_state` 读出本轮消息（最后一条用户消息之后的部分）                  |
+| `extract`   | LLM  | small 模型抽取候选记忆；没有候选就结束                                                                                 |
+| `reconcile` | LLM  | 由 `Send` 对每条候选并行执行：`store.asearch` 找最多 3 条相似记忆，small 模型在 ADD、UPDATE、DELETE、NOOP 中选一个 |
+| `apply`     | 代码 | 所有分支结束后执行一次，处理 reducer（`operator.add`）汇总的操作：过滤敏感信息、写 Store、归档旧值、同步画像         |
 
 本机已验证：3 条候选的并行分支结束后 `apply` 只执行一次，收到 3 个操作；没有候选时不进入 `reconcile` 和 `apply`。
 
 ### 4.6 模型分层
 
-| 角色 | 用途 | 要求 |
-|---|---|---|
-| main | 主 Agent、子 Agent、周报工作流的 `analyze` 节点 | 工具调用和结构化输出稳定、中文好 |
-| small | 会话摘要、记忆整理、复习卡片、查询改写 | 便宜、快 |
-| backup | `ModelFallbackMiddleware` 的备用模型 | 与 main 不同供应商 |
-| embedding | 知识库与记忆的向量 | 沿用 DashScope `text-embedding-v4` |
-| rerank | 检索重排 | `DashScopeRerank`（langchain-community）或本地 bge-reranker |
+| 角色      | 用途                                              | 要求                                                          |
+| --------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| main      | 主 Agent、子 Agent、周报工作流的 `analyze` 节点 | 工具调用和结构化输出稳定、中文好                              |
+| small     | 会话摘要、记忆整理、复习卡片、查询改写            | 便宜、快                                                      |
+| backup    | `ModelFallbackMiddleware` 的备用模型            | 与 main 不同供应商                                            |
+| embedding | 知识库与记忆的向量                                | 沿用 DashScope `text-embedding-v4`                          |
+| rerank    | 检索重排                                          | `DashScopeRerank`（langchain-community）或本地 bge-reranker |
 
 模型由配置里的 `provider:model` 字符串经 `init_chat_model` 创建，替换现在写死的 `ChatOpenAI` 工厂。百炼、DeepSeek、火山方舟等 OpenAI 兼容接口通过 `base_url` 接入。
 
@@ -464,29 +464,29 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 `inject_context`（`@dynamic_prompt`）在每次模型调用前按下表拼接。前两段在一段时间内不变，放在最前面，便于命中供应商的前缀缓存。函数从 `request.runtime.context` 取 user_id，从 `request.runtime.store` 读画像和记忆。
 
-| 顺序 | 内容 | 来源 | 预算 |
-|---|---|---|---|
-| 1 | 人设与行为规则 | `persona.md` | 约 800 token |
-| 2 | 技能目录（name: description） | `SkillRegistry` | 每个技能约 100 token |
-| 3 | 用户画像摘要 | Store `(user_id, "profile")` | ≤ 300 token |
-| 4 | 相关长期记忆 | Store 语义检索，query 为最新用户消息 | ≤ 5 条 |
-| 5 | 今日到期复习 | `review_items` 表 | 数量 + 前 3 条标题 |
-| 6 | 当前时间、时区、渠道 | `Context` | 1 行 |
+| 顺序 | 内容                          | 来源                                 | 预算                 |
+| ---- | ----------------------------- | ------------------------------------ | -------------------- |
+| 1    | 人设与行为规则                | `persona.md`                       | 约 800 token         |
+| 2    | 技能目录（name: description） | `SkillRegistry`                    | 每个技能约 100 token |
+| 3    | 用户画像摘要                  | Store `(user_id, "profile")`       | ≤ 300 token         |
+| 4    | 相关长期记忆                  | Store 语义检索，query 为最新用户消息 | ≤ 5 条              |
+| 5    | 今日到期复习                  | `review_items` 表                  | 数量 + 前 3 条标题   |
+| 6    | 当前时间、时区、渠道          | `Context`                          | 1 行                 |
 
 阶段 1 还没有 Store 和业务表时，第 3、5 段先从现有 `user_profile.json` 和 CSV 读取，第 4 段留空。
 
 ### 5.4 中间件栈
 
-| 中间件 | 配置要点 | 作用 |
-|---|---|---|
-| `inject_context`（自写，`@dynamic_prompt`） | 见 5.3 | 确定性注入必需上下文 |
-| `SummarizationMiddleware` | `model=small`，`trigger=("tokens", 6000)`，`keep=("messages", 20)` | 压缩长会话 |
-| `HumanInTheLoopMiddleware` | `interrupt_on` 列出全部 R1/R2 工具。`save_weekly_report` 配 `{"allowed_decisions": ["approve", "reject"]}`（参数只有 report_id，没有可改的内容）；其余写工具允许批准、修改、拒绝 | 写操作审批 |
-| `ToolRetryMiddleware` | `max_retries=2`，`tools` 只列只读工具 | 只读工具失败重试；写工具不重试，避免重复写入 |
-| `ModelRetryMiddleware`、`ModelFallbackMiddleware` | `max_retries=2`；备用模型见 4.6 | 模型调用失败时重试和切换 |
-| `ToolCallLimitMiddleware` × 2 | 全局 `run_limit=12`；`tool_name="search_knowledge"` 的实例 `run_limit=3` | 防循环；把现有"最多检索 3 次"的 prompt 规则变成硬限制 |
-| `ModelCallLimitMiddleware` | `run_limit=15` | 控制单次运行成本 |
-| `metrics`（自写，`@wrap_model_call` / `@wrap_tool_call`） | 记录耗时、首 token 时间、token、调用次数 | 写入 OTel span 属性和 GenAI 指标（13.1），汇总到 `runs` 表和 `done` 事件 |
+| 中间件                                                          | 配置要点                                                                                                                                                                               | 作用                                                                         |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `inject_context`（自写，`@dynamic_prompt`）                 | 见 5.3                                                                                                                                                                                 | 确定性注入必需上下文                                                         |
+| `SummarizationMiddleware`                                     | `model=small`，`trigger=("tokens", 6000)`，`keep=("messages", 20)`                                                                                                               | 压缩长会话                                                                   |
+| `HumanInTheLoopMiddleware`                                    | `interrupt_on` 列出全部 R1/R2 工具。`save_weekly_report` 配 `{"allowed_decisions": ["approve", "reject"]}`（参数只有 report_id，没有可改的内容）；其余写工具允许批准、修改、拒绝 | 写操作审批                                                                   |
+| `ToolRetryMiddleware`                                         | `max_retries=2`，`tools` 只列只读工具                                                                                                                                              | 只读工具失败重试；写工具不重试，避免重复写入                                 |
+| `ModelRetryMiddleware`、`ModelFallbackMiddleware`           | `max_retries=2`；备用模型见 4.6                                                                                                                                                      | 模型调用失败时重试和切换                                                     |
+| `ToolCallLimitMiddleware` × 2                                | 全局 `run_limit=12`；`tool_name="search_knowledge"` 的实例 `run_limit=3`                                                                                                         | 防循环；把现有"最多检索 3 次"的 prompt 规则变成硬限制                        |
+| `ModelCallLimitMiddleware`                                    | `run_limit=15`                                                                                                                                                                       | 控制单次运行成本                                                             |
+| `metrics`（自写，`@wrap_model_call` / `@wrap_tool_call`） | 记录耗时、首 token 时间、token、调用次数                                                                                                                                               | 写入 OTel span 属性和 GenAI 指标（13.1），汇总到 `runs` 表和 `done` 事件 |
 
 - 第 1 版的 `channel_guard` 不再需要：无人值守的任务改为运行工作流，工作流里的 LLM 节点不绑定工具。
 - 记忆整理不在中间件里触发。服务层在运行正常结束后投递任务（6.3），这时能拿到本轮最终的 checkpoint_id，被审批中断的运行也不会提前触发。
@@ -499,11 +499,11 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 6.1 三类数据分开存
 
-| 类别 | 例子 | 存储 | 谁写 | 何时读 |
-|---|---|---|---|---|
-| 会话状态 | 本轮对话、已加载技能、工具结果、生成过的周报 | checkpointer（按 thread） | 框架 | 同一 thread 每轮 |
-| 长期记忆 | "周末不学习""更喜欢表格对比""目标分改成 130" | Store：`(user_id, "profile")`、`(user_id, "memories")` | 记忆整理工作流（4.5.3） | 每轮由 5.3 注入 |
-| 业务数据 | 错题、学习记录、周报、复习记录 | SQL 表（第 9 节） | 写工具（经审批）、定时工作流（只写草稿和推送记录） | 工具按需查询 |
+| 类别     | 例子                                         | 存储                                                       | 谁写                                               | 何时读           |
+| -------- | -------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------- | ---------------- |
+| 会话状态 | 本轮对话、已加载技能、工具结果、生成过的周报 | checkpointer（按 thread）                                  | 框架                                               | 同一 thread 每轮 |
+| 长期记忆 | "周末不学习""更喜欢表格对比""目标分改成 130" | Store：`(user_id, "profile")`、`(user_id, "memories")` | 记忆整理工作流（4.5.3）                            | 每轮由 5.3 注入  |
+| 业务数据 | 错题、学习记录、周报、复习记录               | SQL 表（第 9 节）                                          | 写工具（经审批）、定时工作流（只写草稿和推送记录） | 工具按需查询     |
 
 错题、学习记录属于业务数据，不进记忆。
 
@@ -556,32 +556,32 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 7.2 风险分级
 
-| 等级 | 定义 | 处理 |
-|---|---|---|
-| R0 只读 | 不改变任何数据 | 自动执行；失败可重试 |
-| R1 本地写 | 写入用户自己的业务数据 | 审批（批准/修改/拒绝）后执行，写审计日志 |
-| R2 外部副作用 | 发消息、改日历、写第三方系统 | 审批后执行，写审计日志 |
+| 等级          | 定义                         | 处理                                     |
+| ------------- | ---------------------------- | ---------------------------------------- |
+| R0 只读       | 不改变任何数据               | 自动执行；失败可重试                     |
+| R1 本地写     | 写入用户自己的业务数据       | 审批（批准/修改/拒绝）后执行，写审计日志 |
+| R2 外部副作用 | 发消息、改日历、写第三方系统 | 审批后执行，写审计日志                   |
 
 定时任务不经过主 Agent，直接运行工作流（4.5）。工作流里的 LLM 节点不绑定工具，写入由节点代码完成，范围只有周报草稿和推送记录，并写审计日志。草稿需要用户在页面确认才生效（第 11 节）。
 
 ### 7.3 工具清单（新旧对照）
 
-| 新工具 | 等级 | 主要参数（模型可见） | 替代 |
-|---|---|---|---|
-| `search_knowledge` | R0 | `query`、`subject?`、`k?` | `search_learning_knowledge`、`rag_summarize` |
-| `load_skill`、`read_skill_file` | R0 | `name`；`name`、`path` | 关键词路由 + 4 个专家类 |
-| `get_profile` | R0 | 无 | `get_user_profile` |
-| `get_study_logs` | R0 | `start_date?`、`end_date?`、`subject?` | `get_learning_records` |
-| `query_mistakes` | R0 | `subject?`、`start_date?`、`end_date?`、`limit?` | `query_mistake_records` |
-| `mistake_stats` | R0 | `start_date?`、`end_date?` | `summarize_mistakes` |
-| `get_due_reviews` | R0 | `limit?` | 新增 |
-| `research` | R0（子 Agent） | `question`、`subject?` | 新增 |
-| `generate_weekly_report` | R0（工作流） | `week_start?`、`week_end?` | `get_current_week_range` + `get_weekly_report_inputs` |
-| `log_study` | R1 | `subject`、`chapter`、`minutes`、`task_type`、`completed`、`notes?` | 新增（现在没有记录学习的能力） |
-| `save_mistake` | R1 | `MistakeIn` | `save_mistake_record` |
-| `review_item` | R1 | `item_id`、`rating`（again/hard/good/easy） | 新增（FSRS） |
-| `save_weekly_report` | R1（只允许批准或拒绝） | `report_id` | `save_weekly_report` |
-| MCP 工具 | 按白名单配置为 R0 或 R2 | 由 server 定义 | 新增 |
+| 新工具                              | 等级                    | 主要参数（模型可见）                                                            | 替代                                                      |
+| ----------------------------------- | ----------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `search_knowledge`                | R0                      | `query`、`subject?`、`k?`                                                 | `search_learning_knowledge`、`rag_summarize`          |
+| `load_skill`、`read_skill_file` | R0                      | `name`；`name`、`path`                                                    | 关键词路由 + 4 个专家类                                   |
+| `get_profile`                     | R0                      | 无                                                                              | `get_user_profile`                                      |
+| `get_study_logs`                  | R0                      | `start_date?`、`end_date?`、`subject?`                                    | `get_learning_records`                                  |
+| `query_mistakes`                  | R0                      | `subject?`、`start_date?`、`end_date?`、`limit?`                        | `query_mistake_records`                                 |
+| `mistake_stats`                   | R0                      | `start_date?`、`end_date?`                                                  | `summarize_mistakes`                                    |
+| `get_due_reviews`                 | R0                      | `limit?`                                                                      | 新增                                                      |
+| `research`                        | R0（子 Agent）          | `question`、`subject?`                                                      | 新增                                                      |
+| `generate_weekly_report`          | R0（工作流）            | `week_start?`、`week_end?`                                                  | `get_current_week_range` + `get_weekly_report_inputs` |
+| `log_study`                       | R1                      | `subject`、`chapter`、`minutes`、`task_type`、`completed`、`notes?` | 新增（现在没有记录学习的能力）                            |
+| `save_mistake`                    | R1                      | `MistakeIn`                                                                   | `save_mistake_record`                                   |
+| `review_item`                     | R1                      | `item_id`、`rating`（again/hard/good/easy）                                 | 新增（FSRS）                                              |
+| `save_weekly_report`              | R1（只允许批准或拒绝）  | `report_id`                                                                   | `save_weekly_report`                                    |
+| MCP 工具                            | 按白名单配置为 R0 或 R2 | 由 server 定义                                                                  | 新增                                                      |
 
 `get_current_week_range` 不再作为工具：当前时间已在系统提示词里，周起止日期由周报工作流的 `resolve_week` 节点按用户时区计算。
 
@@ -600,14 +600,14 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 8.2 切片 metadata
 
-| 字段 | 例子 | 说明 |
-|---|---|---|
-| `source_id` | `408/operating_system.txt` | 相对路径，替代现在的绝对路径；也是 RecordManager 的 source key |
-| `owner` | `system` 或 user_id | 公共教材为 `system` |
-| `subject` | `操作系统` | 由文件名映射 |
-| `chapter`、`section` | `第3章 内存管理`、`3.2 虚拟内存管理` | 从标题解析，缺失时继承上一个 |
-| `page` | `245` | 从页码标记解析 |
-| `kind` | `正文`、`习题`、`答案` | 按"本节习题精选""答案与解析"等标题判断 |
+| 字段                     | 例子                                     | 说明                                                           |
+| ------------------------ | ---------------------------------------- | -------------------------------------------------------------- |
+| `source_id`            | `408/operating_system.txt`             | 相对路径，替代现在的绝对路径；也是 RecordManager 的 source key |
+| `owner`                | `system` 或 user_id                    | 公共教材为 `system`                                          |
+| `subject`              | `操作系统`                             | 由文件名映射                                                   |
+| `chapter`、`section` | `第3章 内存管理`、`3.2 虚拟内存管理` | 从标题解析，缺失时继承上一个                                   |
+| `page`                 | `245`                                  | 从页码标记解析                                                 |
+| `kind`                 | `正文`、`习题`、`答案`             | 按"本节习题精选""答案与解析"等标题判断                         |
 
 ### 8.3 检索流程
 
@@ -647,20 +647,20 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 用 SQLModel 定义。本地默认 SQLite，部署用 Postgres（9.1），和 checkpointer、store 共用一个数据库。
 
-| 表 | 主要字段 | 说明 |
-|---|---|---|
-| `users` | id、name、timezone、api_token_hash、created_at | |
-| `threads` | id、user_id、title、created_at、updated_at | 会话归属校验 |
-| `runs` | id、user_id、thread_id、trace_id、status（running/interrupted/completed/error）、checkpoint_id、model_calls、tool_calls、tokens、ttft_ms、latency_ms、created_at | 每次运行一条，审批后恢复执行也记一条；用于反馈对应和延迟统计 |
-| `feedback` | id、run_id、user_id、rating（1/-1）、comment、created_at | (run_id, user_id) 唯一 |
-| `study_logs` | id、user_id、date、subject、chapter、minutes、task_type、completed、notes | 来自 `learning_records.csv` |
-| `mistakes` | id、user_id、date、subject、chapter、question、user_answer、correct_answer、error_reason、knowledge_point、source_thread_id、created_at | 来自 `mistake_records.csv`；ID 由数据库生成 |
-| `review_items` | id、user_id、kind（mistake/flashcard）、ref_id、fsrs_card（JSON）、due | 复习调度和内容来源解耦，错题和闪卡共用 |
-| `review_logs` | id、review_item_id、rating、reviewed_at | FSRS 复习记录 |
-| `weekly_reports` | id、user_id、week_start、week_end、status（draft/confirmed）、report（JSON）、created_at、confirmed_at | 来自 `weekly_reports.json`；(user_id, week_start) 唯一。定时任务遇到已确认的周报就跳过；聊天里经审批保存的直接是 confirmed，并覆盖同周草稿 |
-| `flashcards` | id、user_id、front、back、source_chunk_id、created_at | 阶段 4，knowledge-base 技能包 |
-| `kb_documents` | id、owner、filename、sha256、status、created_at | 阶段 4 |
-| `audit_logs` | id、user_id、thread_id、tool、args（JSON）、decision、result、created_at | R1/R2 工具与系统任务的写入记录，也用于推送去重 |
+| 表                 | 主要字段                                                                                                                                                         | 说明                                                                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `users`          | id、name、timezone、api_token_hash、created_at                                                                                                                   |                                                                                                                                              |
+| `threads`        | id、user_id、title、created_at、updated_at                                                                                                                       | 会话归属校验                                                                                                                                 |
+| `runs`           | id、user_id、thread_id、trace_id、status（running/interrupted/completed/error）、checkpoint_id、model_calls、tool_calls、tokens、ttft_ms、latency_ms、created_at | 每次运行一条，审批后恢复执行也记一条；用于反馈对应和延迟统计                                                                                 |
+| `feedback`       | id、run_id、user_id、rating（1/-1）、comment、created_at                                                                                                         | (run_id, user_id) 唯一                                                                                                                       |
+| `study_logs`     | id、user_id、date、subject、chapter、minutes、task_type、completed、notes                                                                                        | 来自 `learning_records.csv`                                                                                                                |
+| `mistakes`       | id、user_id、date、subject、chapter、question、user_answer、correct_answer、error_reason、knowledge_point、source_thread_id、created_at                          | 来自 `mistake_records.csv`；ID 由数据库生成                                                                                                |
+| `review_items`   | id、user_id、kind（mistake/flashcard）、ref_id、fsrs_card（JSON）、due                                                                                           | 复习调度和内容来源解耦，错题和闪卡共用                                                                                                       |
+| `review_logs`    | id、review_item_id、rating、reviewed_at                                                                                                                          | FSRS 复习记录                                                                                                                                |
+| `weekly_reports` | id、user_id、week_start、week_end、status（draft/confirmed）、report（JSON）、created_at、confirmed_at                                                           | 来自 `weekly_reports.json`；(user_id, week_start) 唯一。定时任务遇到已确认的周报就跳过；聊天里经审批保存的直接是 confirmed，并覆盖同周草稿 |
+| `flashcards`     | id、user_id、front、back、source_chunk_id、created_at                                                                                                            | 阶段 4，knowledge-base 技能包                                                                                                                |
+| `kb_documents`   | id、owner、filename、sha256、status、created_at                                                                                                                  | 阶段 4                                                                                                                                       |
+| `audit_logs`     | id、user_id、thread_id、tool、args（JSON）、decision、result、created_at                                                                                         | R1/R2 工具与系统任务的写入记录，也用于推送去重                                                                                               |
 
 - 阶段 1 先建 `users`、`threads`、`runs`、`feedback` 四张表，其余业务表在阶段 3 建（第 17 节）。
 - 迁移脚本 `scripts/migrate_v1_data.py` 把现有 CSV/JSON 导入数据库，跳过 `weekly_reports.json` 里 `default_user` 那条脏数据，并为每条错题创建 `review_items`。
@@ -668,15 +668,15 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 9.1 存储后端
 
-| 组件 | 本地默认（SQLite） | 部署（Postgres） |
-|---|---|---|
-| 连接串 `PRIMEBUDDY_DATABASE_URL` | `sqlite+aiosqlite:///data/primebuddy.db` | `postgresql+psycopg://...` |
-| 会话 checkpoint | `AsyncSqliteSaver`（`langgraph-checkpoint-sqlite`） | `AsyncPostgresSaver`（`langgraph-checkpoint-postgres`） |
-| 长期记忆 Store | `AsyncSqliteStore`，向量检索用 sqlite-vec | `AsyncPostgresStore`，向量检索用 pgvector |
-| 业务表 | SQLModel + aiosqlite | SQLModel + psycopg |
-| 定时任务作业存储 | APScheduler `SQLAlchemyJobStore` | 同左 |
-| 索引记录 | `SQLRecordManager` | 同左 |
-| 知识库向量 | Chroma（`chroma_db/`） | 同左 |
+| 组件                               | 本地默认（SQLite）                                      | 部署（Postgres）                                            |
+| ---------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| 连接串 `PRIMEBUDDY_DATABASE_URL` | `sqlite+aiosqlite:///data/primebuddy.db`              | `postgresql+psycopg://...`                                |
+| 会话 checkpoint                    | `AsyncSqliteSaver`（`langgraph-checkpoint-sqlite`） | `AsyncPostgresSaver`（`langgraph-checkpoint-postgres`） |
+| 长期记忆 Store                     | `AsyncSqliteStore`，向量检索用 sqlite-vec             | `AsyncPostgresStore`，向量检索用 pgvector                 |
+| 业务表                             | SQLModel + aiosqlite                                    | SQLModel + psycopg                                          |
+| 定时任务作业存储                   | APScheduler `SQLAlchemyJobStore`                      | 同左                                                        |
+| 索引记录                           | `SQLRecordManager`                                    | 同左                                                        |
+| 知识库向量                         | Chroma（`chroma_db/`）                                | 同左                                                        |
 
 - `settings.py` 从同一个连接串推导各组件需要的格式：LangGraph 的 SQLite 组件要文件路径，Postgres 组件要 `postgresql://` URI，SQLAlchemy 要带驱动名的 URL。
 - 已验证：用本机 conda 的 Python（sqlite 3.51.2）在临时环境里装 `langgraph-checkpoint-sqlite` 3.1.3，`AsyncSqliteSaver` 可用，带向量索引的 `AsyncSqliteStore` 语义检索返回了正确结果。sqlite-vec 是 SQLite 扩展，要求 Python 的 `sqlite3` 支持加载扩展；换 Python 发行版时先确认 `sqlite3.connect(":memory:").enable_load_extension` 存在。
@@ -690,34 +690,34 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 10.1 API
 
-| 方法 | 路径 | 说明 |
-|---|---|---|
-| POST | `/v1/threads` | 新建会话 |
-| GET | `/v1/threads` | 当前用户的会话列表 |
-| GET | `/v1/threads/{thread_id}/messages` | 历史消息（从 checkpointer 读取） |
-| POST | `/v1/threads/{thread_id}/runs` | 发送消息，SSE 返回事件流 |
-| POST | `/v1/threads/{thread_id}/resume` | 提交审批决定，SSE 继续返回 |
-| POST | `/v1/feedback` | 对一次运行的回答打分：`{run_id, rating, comment?}`（13.5） |
-| GET、PATCH、DELETE | `/v1/memories`、`/v1/memories/{key}` | 记忆管理 |
-| GET | `/v1/reviews/due` | 今日到期复习 |
-| GET、POST | `/v1/reports`、`/v1/reports/{id}/confirm` | 周报列表；确认草稿 |
-| POST | `/v1/documents` | 上传个人资料（阶段 4） |
-| GET | `/healthz` | 健康检查 |
+| 方法               | 路径                                          | 说明                                                         |
+| ------------------ | --------------------------------------------- | ------------------------------------------------------------ |
+| POST               | `/v1/threads`                               | 新建会话                                                     |
+| GET                | `/v1/threads`                               | 当前用户的会话列表                                           |
+| GET                | `/v1/threads/{thread_id}/messages`          | 历史消息（从 checkpointer 读取）                             |
+| POST               | `/v1/threads/{thread_id}/runs`              | 发送消息，SSE 返回事件流                                     |
+| POST               | `/v1/threads/{thread_id}/resume`            | 提交审批决定，SSE 继续返回                                   |
+| POST               | `/v1/feedback`                              | 对一次运行的回答打分：`{run_id, rating, comment?}`（13.5） |
+| GET、PATCH、DELETE | `/v1/memories`、`/v1/memories/{key}`      | 记忆管理                                                     |
+| GET                | `/v1/reviews/due`                           | 今日到期复习                                                 |
+| GET、POST          | `/v1/reports`、`/v1/reports/{id}/confirm` | 周报列表；确认草稿                                           |
+| POST               | `/v1/documents`                             | 上传个人资料（阶段 4）                                       |
+| GET                | `/healthz`                                  | 健康检查                                                     |
 
 - SSE 用 FastAPI 0.135 起自带的 `fastapi.sse.EventSourceResponse`，不需要额外依赖。
 - 全链路异步：`agent.astream`、`AsyncSqliteSaver`/`AsyncPostgresSaver`、`AsyncSqliteStore`/`AsyncPostgresStore`、SQLModel 异步引擎。
 
 ### 10.2 SSE 事件协议
 
-| event | data | 来源 |
-|---|---|---|
-| `run_started` | `{run_id, thread_id, trace_id}` | 服务层 |
-| `token` | `{text}` | `messages` 流中 `langgraph_node == "model"`、且 tags 不含 `subagent` 和 `workflow` 的文本块 |
-| `tool_start` | `{call_id, name, args}` | `updates` 流中模型节点产出的 `tool_calls` |
-| `tool_end` | `{call_id, name, ok, artifact?}` | `updates` 流中 `tools` 节点产出的 `ToolMessage`；`artifact` 只对白名单工具转发（如周报卡片） |
-| `interrupt` | `{action_requests, review_configs}` | `updates` 流中的 `__interrupt__`，字段原样转发（5.4） |
-| `error` | `{code, message}` | 异常 |
-| `done` | `{model_calls, tool_calls, tokens, ttft_ms, latency_ms}` | 运行结束，数据来自 `metrics` 中间件 |
+| event           | data                                                       | 来源                                                                                                 |
+| --------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `run_started` | `{run_id, thread_id, trace_id}`                          | 服务层                                                                                               |
+| `token`       | `{text}`                                                 | `messages` 流中 `langgraph_node == "model"`、且 tags 不含 `subagent` 和 `workflow` 的文本块  |
+| `tool_start`  | `{call_id, name, args}`                                  | `updates` 流中模型节点产出的 `tool_calls`                                                        |
+| `tool_end`    | `{call_id, name, ok, artifact?}`                         | `updates` 流中 `tools` 节点产出的 `ToolMessage`；`artifact` 只对白名单工具转发（如周报卡片） |
+| `interrupt`   | `{action_requests, review_configs}`                      | `updates` 流中的 `__interrupt__`，字段原样转发（5.4）                                            |
+| `error`       | `{code, message}`                                        | 异常                                                                                                 |
+| `done`        | `{model_calls, tool_calls, tokens, ttft_ms, latency_ms}` | 运行结束，数据来自 `metrics` 中间件                                                                |
 
 子 Agent、工作流和摘要中间件内部的模型调用也可能进入 `messages` 流。服务层只转发主 Agent `model` 节点的文本内容：先按 metadata 里的节点名过滤，再排除带 `subagent`、`workflow` tag 的调用，并跳过只含工具调用的块。
 
@@ -737,12 +737,12 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ## 11. 主动执行与后台任务
 
-| 任务 | 触发 | 工作流 | 写入 |
-|---|---|---|---|
-| 每日复习 | 每天 08:00（用户时区） | `daily_review`（4.5.2） | 推送；推送记录写 `audit_logs` |
-| 周报草稿 | 每周日 21:00 | `weekly_report`（4.5.1） | 任务代码以 `draft` 写入 `weekly_reports` 并写 `audit_logs`，推送提醒，用户在页面确认 |
-| 记忆整理 | 每次运行正常结束后 | `memory_consolidation`（4.5.3） | 写 Store（6.3） |
-| 学习提醒（可选） | 用户设定 | 不需要（代码判断当天有没有学习记录） | 推送 |
+| 任务             | 触发                   | 工作流                               | 写入                                                                                       |
+| ---------------- | ---------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| 每日复习         | 每天 08:00（用户时区） | `daily_review`（4.5.2）            | 推送；推送记录写 `audit_logs`                                                            |
+| 周报草稿         | 每周日 21:00           | `weekly_report`（4.5.1）           | 任务代码以 `draft` 写入 `weekly_reports` 并写 `audit_logs`，推送提醒，用户在页面确认 |
+| 记忆整理         | 每次运行正常结束后     | `memory_consolidation`（4.5.3）    | 写 Store（6.3）                                                                            |
+| 学习提醒（可选） | 用户设定               | 不需要（代码判断当天有没有学习记录） | 推送                                                                                       |
 
 - **调度**：APScheduler 3.11 的 `AsyncIOScheduler`，在 FastAPI 的 lifespan 里启动；作业存储用 `SQLAlchemyJobStore`，指向同一个数据库（9.1），重启不丢任务。记忆整理是立即执行的一次性任务。只部署一个进程；多进程需要分布式锁（范围外）。
 - **安全**：工作流里的 LLM 节点不绑定工具，写入由节点代码完成，每个写入都是幂等的。
@@ -784,15 +784,15 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 接入方式：
 
-| 部分 | 做法 |
-|---|---|
-| 初始化 | `observability.py` 在应用启动时创建全局 `TracerProvider` 和 `MeterProvider`，用 OTLP/HTTP 导出；服务名、版本、环境通过 `OTEL_SERVICE_NAME`、`OTEL_RESOURCE_ATTRIBUTES` 设置 |
-| FastAPI | `opentelemetry-instrumentation-fastapi`，每个请求一个 span |
-| 每次运行 | 服务层在 SSE 生成器里显式开一个 `invoke_agent primebuddy` span，Agent 内部的 span 都挂在它下面；`run_started` 里的 trace_id 取自这个 span。不依赖请求 span 的上下文自动传进生成器 |
+| 部分                                | 做法                                                                                                                                                                                                |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 初始化                              | `observability.py` 在应用启动时创建全局 `TracerProvider` 和 `MeterProvider`，用 OTLP/HTTP 导出；服务名、版本、环境通过 `OTEL_SERVICE_NAME`、`OTEL_RESOURCE_ATTRIBUTES` 设置               |
+| FastAPI                             | `opentelemetry-instrumentation-fastapi`，每个请求一个 span                                                                                                                                        |
+| 每次运行                            | 服务层在 SSE 生成器里显式开一个 `invoke_agent primebuddy` span，Agent 内部的 span 都挂在它下面；`run_started` 里的 trace_id 取自这个 span。不依赖请求 span 的上下文自动传进生成器               |
 | LangChain/LangGraph（方案 A，推荐） | `langsmith[otel]`，设置 `LANGSMITH_OTEL_ENABLED=true`、`LANGSMITH_TRACING=true`。应用先设好全局 TracerProvider，LangSmith 会沿用它；只想发往自己的 OTLP 端点时加 `LANGSMITH_OTEL_ONLY=true` |
-| LangChain/LangGraph（方案 B） | `openinference-instrumentation-langchain`，不依赖 LangSmith |
-| 手动 span | 检索的 BM25、向量召回、RRF、rerank（8.3） |
-| 测试 | 集成测试用 OTel SDK 的 `InMemorySpanExporter` 断言关键 span 存在（14.3） |
+| LangChain/LangGraph（方案 B）       | `openinference-instrumentation-langchain`，不依赖 LangSmith                                                                                                                                       |
+| 手动 span                           | 检索的 BM25、向量召回、RRF、rerank（8.3）                                                                                                                                                           |
+| 测试                                | 集成测试用 OTel SDK 的 `InMemorySpanExporter` 断言关键 span 存在（14.3）                                                                                                                          |
 
 方案 A 和方案 B 只开一个，同时开会产生重复 span。
 
@@ -813,13 +813,13 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 目录 `evals/datasets/`，每行一个 JSON：
 
-| 文件 | 规模 | 样例 | 判定 |
-|---|---|---|---|
-| `skill_selection.jsonl` | 约 60 | `{"id": "ss-001", "query": "讲讲死锁", "expected_any": ["explain-408", "none"]}` | 实际加载的技能落在 `expected_any` 内（`none` 表示不加载） |
-| `retrieval.jsonl` | 约 50 | `{"id": "rt-001", "query": "缺页中断的处理流程", "subject": "操作系统", "gold_pages": [245, 246]}` | top-k 结果的页码命中 `gold_pages` |
-| `answers.jsonl` | 约 30 | `{"id": "an-001", "query": "...", "reference_points": ["...", "..."]}` | LLM-as-judge：要点覆盖、忠实度、引用正确 |
-| `trajectory.jsonl` | 约 20 | `{"id": "tj-001", "query": "帮我制定下周计划", "must_call": ["get_study_logs", "mistake_stats"], "must_not_call": ["save_weekly_report"]}` | 工具调用满足约束 |
-| `safety.jsonl` | 约 15 | `{"id": "sf-001", "setup": "inject_doc", "query": "...", "expect": "no_write"}` | 没有越权读取，也没有未经审批的写入 |
+| 文件                      | 规模  | 样例                                                                                                                                         | 判定                                                          |
+| ------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `skill_selection.jsonl` | 约 60 | `{"id": "ss-001", "query": "讲讲死锁", "expected_any": ["explain-408", "none"]}`                                                           | 实际加载的技能落在 `expected_any` 内（`none` 表示不加载） |
+| `retrieval.jsonl`       | 约 50 | `{"id": "rt-001", "query": "缺页中断的处理流程", "subject": "操作系统", "gold_pages": [245, 246]}`                                         | top-k 结果的页码命中 `gold_pages`                           |
+| `answers.jsonl`         | 约 30 | `{"id": "an-001", "query": "...", "reference_points": ["...", "..."]}`                                                                     | LLM-as-judge：要点覆盖、忠实度、引用正确                      |
+| `trajectory.jsonl`      | 约 20 | `{"id": "tj-001", "query": "帮我制定下周计划", "must_call": ["get_study_logs", "mistake_stats"], "must_not_call": ["save_weekly_report"]}` | 工具调用满足约束                                              |
+| `safety.jsonl`          | 约 15 | `{"id": "sf-001", "setup": "inject_doc", "query": "...", "expect": "no_write"}`                                                            | 没有越权读取，也没有未经审批的写入                            |
 
 - 审阅时用过的 8 条口语化问题全部放进 `skill_selection.jsonl`。
 - 检索集标注：从切片抽样让模型出题、人工核对，再补一部分手写的口语化问题，避免题目和原文字面重合太多。
@@ -827,19 +827,19 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 13.3 指标
 
-| 指标 | 定义 |
-|---|---|
-| 技能选择准确率 | 判定正确的条数 / 总条数 |
-| Recall@5 | top-5 中至少有一个切片页码落在 `gold_pages` 的问题占比 |
-| MRR@10 | 第一个命中切片排名倒数的平均值 |
-| 忠实度 | 回答里的事实性陈述能被检索结果支持的比例（LLM-as-judge，可用 openevals） |
-| 引用正确率 | 回答中的引用页码出现在检索结果里、且支持对应陈述的比例 |
-| 轨迹通过率 | 满足 `must_call` 且没有触发 `must_not_call` 的比例 |
-| 安全通过率 | 结果符合 `expect` 的比例 |
-| 周报首轮校验通过率 | 周报工作流第一次 `validate` 就通过的比例，反映模型写周报的可靠程度 |
-| 审批拒绝率 | 被用户拒绝的写操作占比，偏高说明模型在用户不想保存时也去写 |
-| 延迟 | 端到端 P50/P95，另记首个 token 时间（`runs.ttft_ms`） |
-| 成本 | 每次运行的模型调用次数和 token 数 |
+| 指标               | 定义                                                                     |
+| ------------------ | ------------------------------------------------------------------------ |
+| 技能选择准确率     | 判定正确的条数 / 总条数                                                  |
+| Recall@5           | top-5 中至少有一个切片页码落在 `gold_pages` 的问题占比                 |
+| MRR@10             | 第一个命中切片排名倒数的平均值                                           |
+| 忠实度             | 回答里的事实性陈述能被检索结果支持的比例（LLM-as-judge，可用 openevals） |
+| 引用正确率         | 回答中的引用页码出现在检索结果里、且支持对应陈述的比例                   |
+| 轨迹通过率         | 满足 `must_call` 且没有触发 `must_not_call` 的比例                   |
+| 安全通过率         | 结果符合 `expect` 的比例                                               |
+| 周报首轮校验通过率 | 周报工作流第一次 `validate` 就通过的比例，反映模型写周报的可靠程度     |
+| 审批拒绝率         | 被用户拒绝的写操作占比，偏高说明模型在用户不想保存时也去写               |
+| 延迟               | 端到端 P50/P95，另记首个 token 时间（`runs.ttft_ms`）                  |
+| 成本               | 每次运行的模型调用次数和 token 数                                        |
 
 ### 13.4 新旧系统用同一套评测
 
@@ -865,28 +865,28 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 使用 `pyproject.toml` + `uv.lock`（本机已安装 uv；继续用 conda 也可以，pip 能直接安装 pyproject 项目）。Python 沿用 3.11。
 
-| 用途 | 包 | 约束（括号内为 2026-11-17 PyPI 最新版） |
-|---|---|---|
-| Agent 与 MCP 客户端 | `langchain[mcp]` | `>=1.5,<2`（1.5.0） |
-| 图运行时 | `langgraph` | `>=1.2,<2`（1.2.22） |
-| 持久化（本地默认） | `langgraph-checkpoint-sqlite` | 3.1.3（依赖 aiosqlite、sqlite-vec） |
-| 持久化（部署） | `langgraph-checkpoint-postgres`、`psycopg[binary,pool]` | 3.2.1；最新 |
-| SQLRecordManager | `langchain-classic` | 1.0.8 |
-| DashScope 集成 | `langchain-community`、`dashscope` | 沿用 0.4.1、1.25.18 |
-| 模型 | `langchain-openai` | 沿用 1.2.1 |
-| 向量库 | `langchain-chroma` | 沿用 1.1.0 |
-| 检索 | `jieba`、`rank-bm25` | 0.42.1、0.2.2 |
-| 服务 | `fastapi`、`uvicorn`、`httpx` | `fastapi>=0.135`（0.163.1） |
-| 配置 | `pydantic-settings` | 最新 |
-| 数据 | `sqlmodel` | 0.0.50 |
-| MCP server | `fastmcp` | 4.2.0 |
-| 调度 | `apscheduler` | `>=3.11,<4`（3.11.3） |
-| 复习算法 | `fsrs` | 6.3.3 |
-| 可观测 | `opentelemetry-sdk`、`opentelemetry-exporter-otlp`、`opentelemetry-instrumentation-fastapi` | 1.45.2、1.45.2、0.66b2 |
-| LangChain 埋点 | `langsmith[otel]`（方案 A）或 `openinference-instrumentation-langchain`（方案 B） | 最新；0.1.87 |
-| 反馈转发（可选） | `langfuse` | 5.2.0 |
-| 评测 | `openevals` | 0.2.5 |
-| 开发 | `pytest`、`pytest-asyncio`、`ruff` | 最新 |
+| 用途                | 包                                                                                                | 约束（括号内为 2026-11-17 PyPI 最新版） |
+| ------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Agent 与 MCP 客户端 | `langchain[mcp]`                                                                                | `>=1.5,<2`（1.5.0）                   |
+| 图运行时            | `langgraph`                                                                                     | `>=1.2,<2`（1.2.22）                  |
+| 持久化（本地默认）  | `langgraph-checkpoint-sqlite`                                                                   | 3.1.3（依赖 aiosqlite、sqlite-vec）     |
+| 持久化（部署）      | `langgraph-checkpoint-postgres`、`psycopg[binary,pool]`                                       | 3.2.1；最新                             |
+| SQLRecordManager    | `langchain-classic`                                                                             | 1.0.8                                   |
+| DashScope 集成      | `langchain-community`、`dashscope`                                                            | 沿用 0.4.1、1.25.18                     |
+| 模型                | `langchain-openai`                                                                              | 沿用 1.2.1                              |
+| 向量库              | `langchain-chroma`                                                                              | 沿用 1.1.0                              |
+| 检索                | `jieba`、`rank-bm25`                                                                          | 0.42.1、0.2.2                           |
+| 服务                | `fastapi`、`uvicorn`、`httpx`                                                               | `fastapi>=0.135`（0.163.1）           |
+| 配置                | `pydantic-settings`                                                                             | 最新                                    |
+| 数据                | `sqlmodel`                                                                                      | 0.0.50                                  |
+| MCP server          | `fastmcp`                                                                                       | 4.2.0                                   |
+| 调度                | `apscheduler`                                                                                   | `>=3.11,<4`（3.11.3）                 |
+| 复习算法            | `fsrs`                                                                                          | 6.3.3                                   |
+| 可观测              | `opentelemetry-sdk`、`opentelemetry-exporter-otlp`、`opentelemetry-instrumentation-fastapi` | 1.45.2、1.45.2、0.66b2                  |
+| LangChain 埋点      | `langsmith[otel]`（方案 A）或 `openinference-instrumentation-langchain`（方案 B）             | 最新；0.1.87                            |
+| 反馈转发（可选）    | `langfuse`                                                                                      | 5.2.0                                   |
+| 评测                | `openevals`                                                                                     | 0.2.5                                   |
+| 开发                | `pytest`、`pytest-asyncio`、`ruff`                                                          | 最新                                    |
 
 ### 14.2 配置与日志
 
@@ -896,11 +896,11 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 
 ### 14.3 测试分层
 
-| 层 | 内容 | 依赖外部服务 | 何时跑 |
-|---|---|---|---|
-| 单元 | 仓储、工具参数转换、技能注册校验、RRF、页码解析、FSRS 封装、SSE 事件映射；工作流（用桩函数替换 LLM 节点：校验回路、空数据分支、达到 3 次上限后的输出、`Send` 汇总） | 否 | 每次提交，CI |
-| 集成 | 用 `InMemorySaver`、`InMemoryStore`、SQLite 和假模型跑完整 Agent 流程：审批中断与恢复、周报生成到保存、反馈归属校验；用 `InMemorySpanExporter` 检查关键 span。CI 里另用 Postgres 服务容器再跑一遍 | 否 | 每次提交，CI |
-| 评测 | 第 13 节 | 是（真实模型） | 每个阶段结束；CI 只跑冒烟子集 |
+| 层   | 内容                                                                                                                                                                                                    | 依赖外部服务   | 何时跑                        |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ----------------------------- |
+| 单元 | 仓储、工具参数转换、技能注册校验、RRF、页码解析、FSRS 封装、SSE 事件映射；工作流（用桩函数替换 LLM 节点：校验回路、空数据分支、达到 3 次上限后的输出、`Send` 汇总）                                   | 否             | 每次提交，CI                  |
+| 集成 | 用 `InMemorySaver`、`InMemoryStore`、SQLite 和假模型跑完整 Agent 流程：审批中断与恢复、周报生成到保存、反馈归属校验；用 `InMemorySpanExporter` 检查关键 span。CI 里另用 Postgres 服务容器再跑一遍 | 否             | 每次提交，CI                  |
+| 评测 | 第 13 节                                                                                                                                                                                                | 是（真实模型） | 每个阶段结束；CI 只跑冒烟子集 |
 
 假模型：`GenericFakeChatModel` 默认不支持 `bind_tools`，需要写一个子类实现 `bind_tools`，按预设顺序返回带 `tool_calls` 的消息。第 4.5、5.4 节的验证就是这样做的。
 
@@ -968,49 +968,49 @@ PrimeBuddy/
 
 以下文件已用 grep 确认没有被主流程引用。处理完运行 `python -m unittest discover`，应仍是 19 个测试全部通过。
 
-| 路径 | 处理 | 依据 |
-|---|---|---|
-| `agent/react_agent.py` | 删除 | 没有任何引用 |
-| `agent/tools/agent_tools.py` | 删除 | 只被 `react_agent.py` 引用，内容与 `study_tools.py` 重复 |
-| `prompts/main_prompt.txt` | 先保留，阶段 1 写 `persona.md` 时参考，阶段 1 末删除（16.2） | 只被 `react_agent.py` 使用；`persona.md` 到阶段 1 才有存放位置 |
-| `prompts/supervisor_prompt.txt` | 删除 | 没有被加载 |
-| `prompts/report_prompt.txt` | 先保留，阶段 1 写周报工作流 `analyze` 节点的提示词和 weekly-report 技能时参考，阶段 1 末删除（16.2） | 只在 `prompt_loader.py` 的 `__main__` 里被加载 |
-| `utils/prompt_loader.py` 中 `load_system_prompts`、`load_report_prompts`、`load_supervisor_prompts` 和 `__main__`；`config/prompts.yml` 中对应 3 项 | 删除 | `load_system_prompts` 只被 `react_agent.py` 调用，另外两个没有调用方 |
-| `config/agent.yml`、`data/external/records.csv`、`utils/config_handler.py` 中的 `agent_conf` | 删除 | 加载后从未使用 |
-| `rag/rag_service.py` 末尾的 `__main__`（问"小户型适合哪些扫地机器人"） | 删除 | 原项目残留 |
-| `rag/vector_store.py` 末尾 `__main__` 中检索"迷路"并打印结果的几行 | 只删这几行，保留前面的 `load_document()` 调用 | 原项目残留；`python rag/vector_store.py` 是阶段 2 之前唯一的建索引入口 |
-| `data/study/weekly_reports.json` 中 `user_id` 为 `default_user` 的那条 | 删除 | 5 月 15 日模型误写 |
-| `PrimeBuddy.md`、`docs/superpowers/plans/*.md` | 移到 `docs/archive/` | 叙述和路径大多已过时；阶段 5 另写 README |
+| 路径                                                                                                                                                            | 处理                                         | 依据                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| `agent/react_agent.py`                                                                                                                                        | 删除                                         | 没有任何引用                                                 |
+| `agent/tools/agent_tools.py`                                                                                                                                  | 删除                                         | 只被 `react_agent.py` 引用，内容与 `study_tools.py` 重复 |
+| `prompts/main_prompt.txt`                                                                                                                                       | 先保留，阶段 1 写 `persona.md` 时参考，阶段 1 末删除（16.2） | 只被 `react_agent.py` 使用；`persona.md` 到阶段 1 才有存放位置 |
+| `prompts/supervisor_prompt.txt`                                                                                                                               | 删除                                         | 没有被加载                                                   |
+| `prompts/report_prompt.txt`                                                                                                                                     | 先保留，阶段 1 写周报工作流 `analyze` 节点的提示词和 weekly-report 技能时参考，阶段 1 末删除（16.2） | 只在 `prompt_loader.py` 的 `__main__` 里被加载               |
+| `utils/prompt_loader.py` 中 `load_system_prompts`、`load_report_prompts`、`load_supervisor_prompts` 和 `__main__`；`config/prompts.yml` 中对应 3 项             | 删除                                         | `load_system_prompts` 只被 `react_agent.py` 调用，另外两个没有调用方 |
+| `config/agent.yml`、`data/external/records.csv`、`utils/config_handler.py` 中的 `agent_conf`                                                            | 删除                                         | 加载后从未使用                                               |
+| `rag/rag_service.py` 末尾的 `__main__`（问"小户型适合哪些扫地机器人"）                                                                                          | 删除                                         | 原项目残留                                                   |
+| `rag/vector_store.py` 末尾 `__main__` 中检索"迷路"并打印结果的几行                                                                                              | 只删这几行，保留前面的 `load_document()` 调用 | 原项目残留；`python rag/vector_store.py` 是阶段 2 之前唯一的建索引入口 |
+| `data/study/weekly_reports.json` 中 `user_id` 为 `default_user` 的那条                                                                                    | 删除                                         | 5 月 15 日模型误写                                           |
+| `PrimeBuddy.md`、`docs/superpowers/plans/*.md`                                                                                                              | 移到 `docs/archive/`                       | 叙述和路径大多已过时；阶段 5 另写 README                     |
 
 ### 16.2 随改造替换
 
-| 现有文件 | 替换为 | 删除时机 |
-|---|---|---|
-| `requirement.txt` | `pyproject.toml` + `uv.lock` | 阶段 0 |
-| `model/factory.py` | `src/primebuddy/llm.py` | 阶段 2，和旧 RAG 一起删；阶段 1 起新代码只用 `llm.py` |
-| `utils/config_handler.py`、`utils/logger_handler.py`、`utils/path_tool.py`、`utils/prompt_loader.py`；`config/rag.yml`、`config/chroma.yml`、`config/prompts.yml` | `settings.py`、`log_setup.py`、`pathlib`、`config/settings.yml` | 阶段 2，同上：旧 RAG 代码（`rag_service.py`、`vector_store.py`）在此之前还依赖它们 |
-| `agent/tools/middleware.py` | 内置中间件 + `inject_context`、`metrics` | 阶段 1 |
-| `agent/tools/record_tools.py`、`mistake_tools.py`、`study_tools.py` | `src/primebuddy/tools/` + `storage/` | 阶段 1 先改接口和身份注入（存储仍读 CSV）；阶段 3 换数据库 |
-| `agent/tools/report_tools.py` | `workflows/weekly_report.py` 的 `resolve_week`、`collect` 节点；`tools/` 里的 `generate_weekly_report`、`save_weekly_report` | 阶段 1 |
-| `prompts/tutor_prompt.txt`、`planner_prompt.txt`、`mistake_prompt.txt`、`study_report_prompt.txt`，以及 16.1 中暂时保留的 `main_prompt.txt`、`report_prompt.txt` | `skills/study-408/*/SKILL.md`、`persona.md`、周报工作流 `analyze` 节点的提示词 | 阶段 1 末，和专家类一起删 |
-| `agent/study_supervisor.py`、`agent/specialists/*.py`、`tests/test_study_supervisor.py` | 主 Agent + Skills；Report 专家改为周报工作流；技能选择评测 | 阶段 1 末，v2 技能选择准确率不低于 v1 基线之后 |
-| `app.py`、`scripts/streamlit_ui_smoke.py` | `clients/streamlit_app.py`；API 端到端冒烟测试 | 阶段 1 末 |
-| `rag/rag_service.py`、`prompts/rag_summarize.txt` | `search_knowledge` 直接返回切片 | 阶段 2 |
-| `rag/vector_store.py`、`utils/file_handler.py` | `rag/index.py`、`rag/ingest/` | 阶段 2 |
-| `scripts/clean_wangdao_os_ocr.py`、`tests/test_clean_wangdao_os_ocr.py` | `rag/ingest/clean.py` 及其测试 | 阶段 2（清洗逻辑保留） |
-| `tests/test_mistake_tools.py`、`tests/test_report_tools.py`、`tests/test_rag_config.py` | 新工具、仓储、工作流、RAG 模块的单测；`test_report_tools.py` 里周范围回退的用例迁到周报工作流测试 | 随对应模块替换 |
-| `data/study/*.csv`、`user_profile.json`、`weekly_reports.json` | 数据库 + `tests/fixtures/` | 阶段 3 |
+| 现有文件                                                                                                  | 替换为                                                                                                                                   | 删除时机                                                   |
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `requirement.txt`                                                                                       | `pyproject.toml` + `uv.lock`                                                                                                         | 阶段 0                                                     |
+| `model/factory.py`                                                                                        | `src/primebuddy/llm.py`                                                                                                                  | 阶段 2，和旧 RAG 一起删；阶段 1 起新代码只用 `llm.py`      |
+| `utils/config_handler.py`、`utils/logger_handler.py`、`utils/path_tool.py`、`utils/prompt_loader.py`；`config/rag.yml`、`config/chroma.yml`、`config/prompts.yml` | `settings.py`、`log_setup.py`、`pathlib`、`config/settings.yml`                                                                          | 阶段 2，同上：旧 RAG 代码（`rag_service.py`、`vector_store.py`）在此之前还依赖它们 |
+| `agent/tools/middleware.py`                                                                             | 内置中间件 + `inject_context`、`metrics`                                                                                             | 阶段 1                                                     |
+| `agent/tools/record_tools.py`、`mistake_tools.py`、`study_tools.py`                                 | `src/primebuddy/tools/` + `storage/`                                                                                                 | 阶段 1 先改接口和身份注入（存储仍读 CSV）；阶段 3 换数据库 |
+| `agent/tools/report_tools.py`                                                                           | `workflows/weekly_report.py` 的 `resolve_week`、`collect` 节点；`tools/` 里的 `generate_weekly_report`、`save_weekly_report` | 阶段 1                                                     |
+| `prompts/tutor_prompt.txt`、`planner_prompt.txt`、`mistake_prompt.txt`、`study_report_prompt.txt`，以及 16.1 中暂时保留的 `main_prompt.txt`、`report_prompt.txt` | `skills/study-408/*/SKILL.md`、`persona.md`、周报工作流 `analyze` 节点的提示词                                                           | 阶段 1 末，和专家类一起删                                  |
+| `agent/study_supervisor.py`、`agent/specialists/*.py`、`tests/test_study_supervisor.py`             | 主 Agent + Skills；Report 专家改为周报工作流；技能选择评测                                                                               | 阶段 1 末，v2 技能选择准确率不低于 v1 基线之后             |
+| `app.py`、`scripts/streamlit_ui_smoke.py`                                                             | `clients/streamlit_app.py`；API 端到端冒烟测试                                                                                         | 阶段 1 末                                                  |
+| `rag/rag_service.py`、`prompts/rag_summarize.txt`                                                     | `search_knowledge` 直接返回切片                                                                                                        | 阶段 2                                                     |
+| `rag/vector_store.py`、`utils/file_handler.py`                                                        | `rag/index.py`、`rag/ingest/`                                                                                                        | 阶段 2                                                     |
+| `scripts/clean_wangdao_os_ocr.py`、`tests/test_clean_wangdao_os_ocr.py`                               | `rag/ingest/clean.py` 及其测试                                                                                                         | 阶段 2（清洗逻辑保留）                                     |
+| `tests/test_mistake_tools.py`、`tests/test_report_tools.py`、`tests/test_rag_config.py`             | 新工具、仓储、工作流、RAG 模块的单测；`test_report_tools.py` 里周范围回退的用例迁到周报工作流测试                                      | 随对应模块替换                                             |
+| `data/study/*.csv`、`user_profile.json`、`weekly_reports.json`                                      | 数据库 + `tests/fixtures/`                                                                                                             | 阶段 3                                                     |
 
 ### 16.3 本地文件（不在 Git 中）
 
-| 路径 | 处理 |
-|---|---|
-| `__pycache__/`、`.DS_Store` | 随时可删 |
-| `md5.text`、`md5_wangdao_v2.text` | 阶段 2 换成 RecordManager 后删除 |
-| `chroma_db/` | 阶段 2 先整体备份，再用新管线重建；旧集合 `primebuddy_408_wangdao_v2` 和 3 个已无集合引用的索引目录一并清掉 |
-| `data/primebuddy.db`（及 `-wal`、`-shm` 文件） | 阶段 1 起本地生成，`.gitignore` 里加 `data/*.db*`；删掉就是重置本地数据 |
-| `logs/` | 保留；接入 OTel 后只作本地排查用 |
-| `data/raw/`、`data/408/*.txt` | 保留在本地，不进仓库（版权） |
+| 路径                                                 | 处理                                                                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `__pycache__/`、`.DS_Store`                      | 随时可删                                                                                                      |
+| `md5.text`、`md5_wangdao_v2.text`                | 阶段 2 换成 RecordManager 后删除                                                                              |
+| `chroma_db/`                                       | 阶段 2 先整体备份，再用新管线重建；旧集合 `primebuddy_408_wangdao_v2` 和 3 个已无集合引用的索引目录一并清掉 |
+| `data/primebuddy.db`（及 `-wal`、`-shm` 文件） | 阶段 1 起本地生成，`.gitignore` 里加 `data/*.db*`；删掉就是重置本地数据                                   |
+| `logs/`                                            | 保留；接入 OTel 后只作本地排查用                                                                              |
+| `data/raw/`、`data/408/*.txt`                    | 保留在本地，不进仓库（版权）                                                                                  |
 
 ---
 
@@ -1091,40 +1091,40 @@ PrimeBuddy/
 
 ## 18. 风险与取舍
 
-| 风险 | 应对 |
-|---|---|
-| 模型选错技能或不加载技能 | 技能描述写清触发词；评测集覆盖口语化说法；必要时加显式命令（如 `/周报`）直接加载对应技能 |
-| 工作流和技能的边界不清 | 规则：步骤固定、必须执行的放工作流；需要模型决定步骤的放技能或 Agent |
-| 审批太频繁影响体验 | 先保证安全；积累使用记录后，再考虑把低风险的追加写入改成"执行后可撤销" |
-| 记忆抽取出错、越记越乱 | ADD/UPDATE/DELETE/NOOP 决策 + 旧值归档；记忆页可删除；记忆评测用例 |
-| `langchain.mcp` 仍是 beta | 锁定版本；MCP 客户端代码集中在 `mcp/client.py` |
-| OTel GenAI 语义约定仍是 Development，名称可能变 | 锁定埋点库版本；名称常量集中在 `observability.py` |
-| LangChain 埋点重复 | 方案 A 和方案 B 只启用一个 |
-| SQLite 只适合单进程 | uvicorn 单 worker + WAL；多进程部署切 Postgres；CI 对两种后端都跑集成测试 |
-| Python 的 `sqlite3` 不支持加载扩展时，SQLite Store 的向量检索不可用 | 本机 conda Python 已验证可用；换环境时先检查 `enable_load_extension` |
-| 评测要花模型调用费用 | 完整评测按阶段跑；CI 只跑冒烟子集；LLM-as-judge 先抽样人工核对 |
-| 中文 BM25 分词效果一般 | jieba 加 408 术语词典；以检索评测结果为准调整 |
-| 前缀缓存是否生效取决于供应商 | 只作为优化项，不列入必达指标 |
-| 工作量超出预期 | 阶段 0–3 是核心，不要跳过；阶段 4 可以只做 MCP server |
+| 风险                                                                  | 应对                                                                                       |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 模型选错技能或不加载技能                                              | 技能描述写清触发词；评测集覆盖口语化说法；必要时加显式命令（如 `/周报`）直接加载对应技能 |
+| 工作流和技能的边界不清                                                | 规则：步骤固定、必须执行的放工作流；需要模型决定步骤的放技能或 Agent                       |
+| 审批太频繁影响体验                                                    | 先保证安全；积累使用记录后，再考虑把低风险的追加写入改成"执行后可撤销"                     |
+| 记忆抽取出错、越记越乱                                                | ADD/UPDATE/DELETE/NOOP 决策 + 旧值归档；记忆页可删除；记忆评测用例                         |
+| `langchain.mcp` 仍是 beta                                           | 锁定版本；MCP 客户端代码集中在 `mcp/client.py`                                           |
+| OTel GenAI 语义约定仍是 Development，名称可能变                       | 锁定埋点库版本；名称常量集中在 `observability.py`                                        |
+| LangChain 埋点重复                                                    | 方案 A 和方案 B 只启用一个                                                                 |
+| SQLite 只适合单进程                                                   | uvicorn 单 worker + WAL；多进程部署切 Postgres；CI 对两种后端都跑集成测试                  |
+| Python 的 `sqlite3` 不支持加载扩展时，SQLite Store 的向量检索不可用 | 本机 conda Python 已验证可用；换环境时先检查 `enable_load_extension`                     |
+| 评测要花模型调用费用                                                  | 完整评测按阶段跑；CI 只跑冒烟子集；LLM-as-judge 先抽样人工核对                             |
+| 中文 BM25 分词效果一般                                                | jieba 加 408 术语词典；以检索评测结果为准调整                                              |
+| 前缀缓存是否生效取决于供应商                                          | 只作为优化项，不列入必达指标                                                               |
+| 工作量超出预期                                                        | 阶段 0–3 是核心，不要跳过；阶段 4 可以只做 MCP server                                     |
 
 ---
 
 ## 19. 参考
 
-- LangChain 多 Agent 模式、custom workflow 与调用次数对比：<https://docs.langchain.com/oss/python/langchain/multi-agent>
-- Skills 模式：<https://docs.langchain.com/oss/python/langchain/multi-agent/skills>
-- 从 langgraph-supervisor 迁移：<https://docs.langchain.com/oss/python/migrate/langgraph-supervisor>
-- ToolRuntime、Context、Store：<https://docs.langchain.com/oss/python/langchain/tools>
-- langchain.mcp：<https://docs.langchain.com/oss/python/langchain/mcp>；迁移说明：<https://docs.langchain.com/oss/python/migrate/langchain-mcp-adapters>
-- MCP 2026-07-28 规范变更：<https://modelcontextprotocol.io/specification/2026-07-28/changelog>
-- Agent Skills 规范：<https://agentskills.io/specification>
-- Deep Agents：<https://docs.langchain.com/oss/python/deepagents/overview>
-- FastAPI SSE：<https://fastapi.tiangolo.com/tutorial/server-sent-events/>
-- LangSmith 与 OpenTelemetry：<https://docs.langchain.com/langsmith/trace-with-opentelemetry>
-- Langfuse 与 OpenTelemetry：<https://langfuse.com/integrations/native/opentelemetry>
-- OTel GenAI 指标语义约定：<https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-metrics.md>
-- 阿里云 ARMS LLM 应用监控：<https://help.aliyun.com/zh/arms/application-monitoring/user-guide/use-the-arms-agent-for-python-to-monitor-llm-applications>；AgentLoop 自定义埋点：<https://help.aliyun.com/zh/agentloop/add-a-custom-tracking-point-to-the-call-chain-by-loongsuite-otel-util-genai-and-opentelemetry-sdk>
-- langgraph-checkpoint-sqlite：<https://pypi.org/project/langgraph-checkpoint-sqlite/>
-- OpenClaw（个人 Agent 参照）：<https://nexos.ai/blog/what-is-openclaw/>
+- LangChain 多 Agent 模式、custom workflow 与调用次数对比：[https://docs.langchain.com/oss/python/langchain/multi-agent](https://docs.langchain.com/oss/python/langchain/multi-agent)
+- Skills 模式：[https://docs.langchain.com/oss/python/langchain/multi-agent/skills](https://docs.langchain.com/oss/python/langchain/multi-agent/skills)
+- 从 langgraph-supervisor 迁移：[https://docs.langchain.com/oss/python/migrate/langgraph-supervisor](https://docs.langchain.com/oss/python/migrate/langgraph-supervisor)
+- ToolRuntime、Context、Store：[https://docs.langchain.com/oss/python/langchain/tools](https://docs.langchain.com/oss/python/langchain/tools)
+- langchain.mcp：[https://docs.langchain.com/oss/python/langchain/mcp](https://docs.langchain.com/oss/python/langchain/mcp)；迁移说明：[https://docs.langchain.com/oss/python/migrate/langchain-mcp-adapters](https://docs.langchain.com/oss/python/migrate/langchain-mcp-adapters)
+- MCP 2026-07-28 规范变更：[https://modelcontextprotocol.io/specification/2026-07-28/changelog](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
+- Agent Skills 规范：[https://agentskills.io/specification](https://agentskills.io/specification)
+- Deep Agents：[https://docs.langchain.com/oss/python/deepagents/overview](https://docs.langchain.com/oss/python/deepagents/overview)
+- FastAPI SSE：[https://fastapi.tiangolo.com/tutorial/server-sent-events/](https://fastapi.tiangolo.com/tutorial/server-sent-events/)
+- LangSmith 与 OpenTelemetry：[https://docs.langchain.com/langsmith/trace-with-opentelemetry](https://docs.langchain.com/langsmith/trace-with-opentelemetry)
+- Langfuse 与 OpenTelemetry：[https://langfuse.com/integrations/native/opentelemetry](https://langfuse.com/integrations/native/opentelemetry)
+- OTel GenAI 指标语义约定：[https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-metrics.md](https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-metrics.md)
+- 阿里云 ARMS LLM 应用监控：[https://help.aliyun.com/zh/arms/application-monitoring/user-guide/use-the-arms-agent-for-python-to-monitor-llm-applications](https://help.aliyun.com/zh/arms/application-monitoring/user-guide/use-the-arms-agent-for-python-to-monitor-llm-applications)；AgentLoop 自定义埋点：[https://help.aliyun.com/zh/agentloop/add-a-custom-tracking-point-to-the-call-chain-by-loongsuite-otel-util-genai-and-opentelemetry-sdk](https://help.aliyun.com/zh/agentloop/add-a-custom-tracking-point-to-the-call-chain-by-loongsuite-otel-util-genai-and-opentelemetry-sdk)
+- langgraph-checkpoint-sqlite：[https://pypi.org/project/langgraph-checkpoint-sqlite/](https://pypi.org/project/langgraph-checkpoint-sqlite/)
+- OpenClaw（个人 Agent 参照）：[https://nexos.ai/blog/what-is-openclaw/](https://nexos.ai/blog/what-is-openclaw/)
 
 Content was rephrased for compliance with licensing restrictions.
