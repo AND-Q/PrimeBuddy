@@ -76,3 +76,45 @@ This file provides guidance to agents when working with code in this repository.
 ---
 
 # 第二部分：PrimeBuddy项目架构与开发指南
+
+## 1. 当前状态
+- PrimeBuddy 是面向 408 考研的 Streamlit + LangChain 多 Agent RAG 应用，正在重构为通用个人 Agent。
+- 重构在分支 `refactor/personal-agent` 上进行，`main` 保留可演示的旧版本。
+- 目标设计见 `docs/target-architecture.md`，任务顺序见 `docs/todo.md`。动手前先读对应章节；新代码按设计第 15 节放进 `src/primebuddy/`。
+- 旧模块按设计 16.2 的时机删除，不要提前删：`utils/`、`model/`、`config/*.yml` 到阶段 2 才删（旧 RAG 依赖它们）；`prompts/main_prompt.txt`、`prompts/report_prompt.txt` 已不被加载，保留给阶段 1 参考。
+
+## 2. 环境
+- conda 环境 `agent`（Python 3.11），命令统一用 `conda run -n agent <command>`；依赖用 `pip install -r requirement.txt` 安装（阶段 0 会改为 `pyproject.toml` + uv）。
+- 环境变量：`MY_API_KEY`、`MY_BASE_URL`（OpenAI 兼容接口），`DASHSCOPE_API_KEY`（Embedding）。聊天模型名只从 `config/rag.yml` 的 `chat_model_name` 读取，环境变量 `MY_MODEL` 不生效。
+- 环境变量写在用户的 `~/.zshrc` 里，Agent 的终端可能还是旧值。需要调用模型时用 `zsh -lic '<command>'` 加载；不要打印 key 的值。
+
+## 3. 常用命令
+```bash
+# 启动应用
+conda run -n agent streamlit run app.py
+
+# 修改 data/408 后增量建索引（按文件 MD5 去重，记录在 md5.text）
+conda run -n agent python rag/vector_store.py
+
+# 导入与 prompt 检查：四个专家模块能导入、5 个 prompt 能读取，不需要模型 key
+conda run -n agent python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
+
+# 端到端冒烟：用真实模型跑 4 个演示问题（约 3 分钟），并检查没有写入错题和周报数据
+conda run -n agent python scripts/streamlit_ui_smoke.py
+```
+- 目前没有单元测试：旧测试已在重构分支删除，新测试从阶段 1 起按设计 14.3 补写。在此之前，改动后至少跑导入与 prompt 检查；涉及模型调用、工具或 RAG 的改动再跑端到端冒烟。
+
+## 4. 代码结构（旧系统）
+- 调用链：`app.py` → `agent/study_supervisor.py`（关键词路由，专家按需创建）→ `agent/specialists/`（4 个专家，`create_agent` + `agent/tools/middleware.py`）→ `agent/tools/`（检索、学习记录、错题、周报工具）。
+- `rag/rag_service.py` 检索后再调用一次模型做总结；`rag/vector_store.py` 管理 Chroma（集合 `primebuddy_408`，目录 `chroma_db/`）。
+- `agent/tools/study_tools.get_rag_service()` 加锁保证只创建一个 Chroma 客户端。模型会并行调用检索工具，去掉锁会导致并发初始化报错。
+- `model/factory.py` 创建聊天模型和 Embedding；`utils/` 负责路径、配置（import 时加载 YAML）、日志（import 时创建 `logs/`）和 prompt 加载。
+- `scripts/clean_wangdao_os_ocr.py` 清洗 OCR 文本。
+
+## 5. 数据与副作用
+- `data/study/` 存放画像、学习记录、错题（CSV）和周报（JSON）。`save_mistake_record`、`save_weekly_report` 只有在 `confirm_save=True` 时才写入；跑完整流程后用 `git status` 确认这些文件没有被意外改动。
+- 不进仓库：`data/408/*.txt`、`data/raw/`（教材，有版权）、`chroma_db/`、`md5*.text`、`logs/`。
+
+## 6. 注意事项
+- 以下文件用 CRLF 换行，修改时保持：`config/rag.yml`、`data/study/weekly_reports.json`、`model/factory.py`、`prompts/rag_summarize.txt`、`rag/vector_store.py`、`utils/config_handler.py`、`utils/file_handler.py`、`utils/logger_handler.py`、`utils/path_tool.py`。
+- 项目内路径用 `utils.path_tool.get_abs_path()` 解析，不依赖当前工作目录。
