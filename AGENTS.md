@@ -1,119 +1,78 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to agents when working with code in this repository.
 
-## 项目概览
+---
 
-PrimeBuddy 是一个面向中文 408 考研学习场景的 Python Streamlit + LangChain 多 Agent RAG 应用。主要调用链路是：
+# 第一部分：通用智能体行为准则
 
-```text
-Streamlit 聊天界面 -> StudyCopilotSupervisor -> 专家 Agent -> LangChain 工具/RAG/本地学习数据 -> 大模型回复
+用于减少大语言模型常见编码错误的行为准则。根据需要与项目特定说明结合使用。  
+**权衡：** 这些准则更偏重谨慎而非速度。对于简单任务，请自行判断。
+
+## 1. 编码前先思考
+**不要想当然。不要掩盖困惑。明确说明取舍。**  
+实施前：
+- 明确说明你的假设。如果不确定，请先询问。
+- 如果存在多种理解，请全部说明，不要自行默默选择。
+- 如果存在更简单的方案，请明确指出。必要时提出异议。
+- 如果有不清楚之处，请停下来，指出困惑所在并询问。
+
+## 2. 简单优先
+**用最少的代码解决问题。不做推测性设计。**
+- 不添加要求之外的功能。
+- 不为只使用一次的代码创建抽象。
+- 不增加未被要求的“灵活性”或“可配置性”。
+- 不为不可能发生的场景添加错误处理。
+- 如果写了 200 行代码，而 50 行就能解决，请重写。  
+问问自己：“资深工程师会不会认为这过于复杂？”如果会，请简化。
+
+## 3. 精准改动
+**只改必须改的内容。只清理自己产生的问题。**  
+编辑现有代码时：
+- 不要顺手“改进”相邻代码、注释或格式。
+- 不要重构没有问题的代码。
+- 遵循现有风格，即使你会采用不同的写法。
+- 如果发现无关的无效代码，请指出，但不要删除。  
+当你的改动产生遗留内容时：
+- 删除因你的改动而不再使用的导入、变量和函数。
+- 除非明确要求，否则不要删除原本就存在的无效代码。  
+判断标准：每一处改动都应能直接追溯到用户的要求。
+
+## 4. 目标驱动执行
+**定义成功标准。循环执行，直到验证通过。**  
+将任务转化为可验证的目标：
+- “添加校验” → “为无效输入编写测试，然后让测试通过”
+- “修复缺陷” → “编写能够复现缺陷的测试，然后让测试通过”
+- “重构 X” → “确保重构前后测试均能通过”  
+对于多步骤任务，给出简短计划：
 ```
-
-项目背景、演示问题和面试讲解内容集中在 [PrimeBuddy.md](PrimeBuddy.md)。这些内容适合作为产品叙事参考；如果文档和代码实现不一致，以当前代码为准。
-
-## 常用命令
-
-项目文档默认使用名为 `agent` 的 conda 环境；如果要和文档中的运行方式保持一致，优先使用 `conda run -n agent <command>`。
-
-```bash
-# 安装依赖
-pip install -r requirement.txt
-
-# 模型相关环境变量
-export MY_API_KEY="your OpenAI-compatible API key"
-export MY_BASE_URL="https://your-base-url/v1"
-export DASHSCOPE_API_KEY="your DashScope API key"
-
-# 修改 data/408 后，构建或更新 Chroma 知识库索引
-conda run -n agent python rag/vector_store.py
-
-# 启动 Streamlit 应用
-conda run -n agent streamlit run app.py
-
-# 指定端口启动
-conda run -n agent streamlit run app.py --server.port 8502
-
-# Python 语法/编译检查
-conda run -n agent python -m compileall app.py agent config model rag utils
-
-# unittest 自动发现；当前没有正式测试文件，可能显示 Ran 0 tests
-conda run -n agent python -m unittest discover
-
-# 如果后续新增 unittest 测试，可运行单个测试模块/用例/方法
-conda run -n agent python -m unittest path.to.test_module
-conda run -n agent python -m unittest path.to.test_module.TestCase.test_method
-
-# 快速确认关键依赖可导入
-conda run -n agent python -c "import streamlit, langchain, langgraph, langchain_chroma; print('imports ok')"
+1. [步骤] → 验证：[检查方式]
+2. [步骤] → 验证：[检查方式]
+3. [步骤] → 验证：[检查方式]
 ```
+明确的成功标准能让你独立循环执行。模糊的标准（如“让它能用”）则需要不断澄清。
 
-项目文档中提供的常用烟测：
+---
+**这些准则有效的表现：** 差异中不必要的改动更少，因过度复杂而返工的情况更少，并且澄清问题发生在实施之前，而不是出错之后。
 
-```bash
-# Supervisor 路由烟测：使用 __new__ 避免完整初始化依赖模型的专家 Agent
-PYTHONIOENCODING=utf-8 conda run -n agent python -c "from agent.study_supervisor import StudyCopilotSupervisor; s=StudyCopilotSupervisor.__new__(StudyCopilotSupervisor); cases={'请生成我的本周学习报告':'report','这道题我错了帮我分析':'mistake','我每天3小时帮我制定计划':'planner','讲一下虚拟内存':'tutor','你好':'general'}; got={q:s.route(q).route for q in cases}; assert got==cases, got; print('route smoke checks passed')"
+## 5. 完成标准
+交付前确认：
+- 实现满足当前需求，没有附带无关功能或重构。
+- 目录归属、扩展权限与持久化数据兼容性未被意外破坏。
+- 相关测试与检查已经通过，或未验证项已明确说明。
+- 差异中没有生成产物、调试代码、临时文件或敏感信息。
+- 最终说明简要列出改动内容、验证结果和必要的后续操作。
 
-# RAG 检索烟测：需要 Embedding 和向量库配置可用
-PYTHONIOENCODING=utf-8 conda run -n agent python -c "from rag.vector_store import VectorStoreService; vs=VectorStoreService(); docs=vs.get_retriever().invoke('操作系统 虚拟内存 缺页中断 常见考点'); text='\n'.join(d.page_content for d in docs); assert any(term in text for term in ['虚拟内存','缺页','分页','页面']); print('retrieval smoke checks passed')"
-```
+## 6. 重要约定
+- **Git 提交**
+  - 仅在用户明确要求时创建提交。
+  - 格式：使用 `<type>: <中文描述>`。
+  - 允许的类型：`feat`、`fix`、`refactor`、`chore`、`docs`、`test`、`perf`、`build`、`ci`、`style`、`revert`。
+  - 每个提交应只包含一项独立且完整的变更。
+  - 提交说明和 PR 描述中不要添加 `Co-Authored-By` 等 AI 署名行或生成工具的署名。
+- **代码注释**
+  - 改动代码时，代码注释要和附近的代码（或者同类代码）的语言、语气与密度保持一致。
 
-当前没有发现 lint、pytest、CI、Docker、Makefile、README、Cursor 规则或 Copilot 指令，也没有正式测试体系。项目文档提到当前环境未安装 `pytest`。
+---
 
-## 架构说明
-
-### 入口与界面
-
-- [app.py](app.py) 是 Streamlit 聊天应用入口。
-- 应用把 `StudyCopilotSupervisor` 保存在 `st.session_state["agent"]`，把聊天记录保存在 `st.session_state["message"]`。
-- 回复通过 `StudyCopilotSupervisor.execute_stream()` 交给 `st.chat_message(...).write_stream(...)` 展示；当前专家 Agent 会先消费 LangChain values stream 并只 yield 最终文本，`app.py` 再按字符加延迟模拟前端流式效果。
-
-### Supervisor 与路由
-
-- [agent/study_supervisor.py](agent/study_supervisor.py) 中的 `StudyCopilotSupervisor.__init__()` 会一次性初始化四个专家 Agent。
-- 路由逻辑是确定性的中文关键词匹配，不是 LLM 分类。
-- 路由优先级依次是：周报、错题、学习计划、知识讲解，最后回退到通用回复。
-- 路由烟测用 `StudyCopilotSupervisor.__new__()` 调用 `route()`，可以避免 `StudyCopilotSupervisor.__init__()` 一次性创建四个专家 Agent；但导入 `agent.study_supervisor` 仍会导入专家模块和部分 RAG 工具，因此环境变量/依赖缺失时优先检查 import-time 初始化。
-
-### 专家 Agent
-
-专家 Agent 位于 [agent/specialists/](agent/specialists/)，共同模式是：调用 `create_agent(model=chat_model, system_prompt=..., tools=[...], middleware=[monitor_tool, log_before_model])`，并提供 `execute()` 和 `execute_stream()` 方法。
-
-注意：`agent.tools.study_tools` 和 `agent.tools.agent_tools` 在模块导入时会创建全局 `RagSummarizeService`，因此导入 Tutor/Mistake/旧 ReAct 相关模块可能会同时初始化向量库、Embedding 和共享 chat model。
-
-- `TutorAgent`：负责 408 知识讲解，使用 `search_learning_knowledge` 和 [prompts/tutor_prompt.txt](prompts/tutor_prompt.txt)。
-- `PlannerAgent`：负责学习计划生成，使用用户画像、学习记录和错题总结工具。
-- `MistakeAgent`：负责错题诊断，可以查询/总结/保存错题记录，也可以使用 RAG。
-- `ReportAgent`：负责学习周报生成，可以获取当前周、聚合周报输入数据并保存周报。
-
-[agent/react_agent.py](agent/react_agent.py) 是较早的通用 ReAct Agent，目前没有接入 [app.py](app.py)。
-
-### RAG 与向量库
-
-- [rag/rag_service.py](rag/rag_service.py) 从 `VectorStoreService` 检索上下文，填入 [prompts/rag_summarize.txt](prompts/rag_summarize.txt)，再调用共享 chat model。
-- [rag/vector_store.py](rag/vector_store.py) 负责 Chroma 初始化、TXT/PDF 加载、文本切分和基于 MD5 的摄入去重。
-- [config/chroma.yml](config/chroma.yml) 配置 `collection_name`、`persist_directory`、`k`、`data_path`、允许的文件类型、chunk 大小和重叠长度。
-- `VectorStoreService.load_document()` 会修改 Chroma 向量库和 [md5.text](md5.text)。修改 [data/408/](data/408/) 后需要重新运行索引构建命令。
-- 大多数项目相对路径通过 `utils.path_tool.get_abs_path()` 解析；但 Chroma 的 `persist_directory` 直接使用配置值，因此实际向量库路径可能受运行命令时的工作目录影响。
-- `RagSummarizeService.print_prompt()` 会把最终拼好的 RAG prompt 和上下文打印到 stdout，主要用于调试检索注入是否正确。
-
-### 模型、配置、Prompt 与日志
-
-- [model/factory.py](model/factory.py) 使用 `langchain_openai.ChatOpenAI` 创建共享 `chat_model`，依赖 `MY_API_KEY`、`MY_BASE_URL` 和 [config/rag.yml](config/rag.yml) 中的 `chat_model_name`。
-- 共享 Embedding 模型是 `DashScopeEmbeddings`，使用 `embedding_model_name`；DashScope 凭证预期从环境变量读取。
-- [utils/config_handler.py](utils/config_handler.py) 在模块导入时加载 YAML 配置，并保存为模块级全局变量。
-- [utils/prompt_loader.py](utils/prompt_loader.py) 从 [config/prompts.yml](config/prompts.yml) 读取 prompt 文件路径。
-- [utils/logger_handler.py](utils/logger_handler.py) 在导入时创建 [logs/](logs/) 目录，并配置每日 `agent_YYYYMMDD.log` 文件。
-- [agent/tools/middleware.py](agent/tools/middleware.py) 负责记录工具调用和模型调用前的日志。
-
-### 本地数据与副作用
-
-这个应用使用本地文件保存演示数据，没有独立数据库：
-
-- [data/study/user_profile.json](data/study/user_profile.json)：演示用户画像。
-- [data/study/learning_records.csv](data/study/learning_records.csv)：学习记录。
-- [data/study/mistake_records.csv](data/study/mistake_records.csv)：错题记录；`save_mistake_record` 会追加写入。
-- [data/study/weekly_reports.json](data/study/weekly_reports.json)：学习周报；`save_weekly_report` 会重写 JSON 文件，且列表型字段按中文分号 `；` 拆分。
-- [data/408/](data/408/)：向量库索引的原始知识文件。
-
-运行完整 Agent 流程时要注意副作用：错题和周报工具可能修改 [data/study/](data/study/) 下的数据文件，知识库摄入会修改 Chroma 向量库和 [md5.text](md5.text)。
+# 第二部分：PrimeBuddy项目架构与开发指南
