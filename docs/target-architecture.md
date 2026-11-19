@@ -972,12 +972,13 @@ PrimeBuddy/
 |---|---|---|
 | `agent/react_agent.py` | 删除 | 没有任何引用 |
 | `agent/tools/agent_tools.py` | 删除 | 只被 `react_agent.py` 引用，内容与 `study_tools.py` 重复 |
-| `prompts/main_prompt.txt` | 删除前把可复用的规则摘进 `persona.md` 草稿 | 只被 `react_agent.py` 使用 |
+| `prompts/main_prompt.txt` | 先保留，阶段 1 写 `persona.md` 时参考，阶段 1 末删除（16.2） | 只被 `react_agent.py` 使用；`persona.md` 到阶段 1 才有存放位置 |
 | `prompts/supervisor_prompt.txt` | 删除 | 没有被加载 |
-| `prompts/report_prompt.txt` | 删除前把周报结构摘进 weekly-report 技能草稿 | 只在 `prompt_loader.py` 的 `__main__` 里被加载 |
-| `utils/prompt_loader.py` 中 `load_system_prompts`、`load_report_prompts`、`load_supervisor_prompts` 和 `__main__`；`config/prompts.yml` 中对应 3 项 | 删除 | 随上面的 prompt 文件一起删 |
+| `prompts/report_prompt.txt` | 先保留，阶段 1 写周报工作流 `analyze` 节点的提示词和 weekly-report 技能时参考，阶段 1 末删除（16.2） | 只在 `prompt_loader.py` 的 `__main__` 里被加载 |
+| `utils/prompt_loader.py` 中 `load_system_prompts`、`load_report_prompts`、`load_supervisor_prompts` 和 `__main__`；`config/prompts.yml` 中对应 3 项 | 删除 | `load_system_prompts` 只被 `react_agent.py` 调用，另外两个没有调用方 |
 | `config/agent.yml`、`data/external/records.csv`、`utils/config_handler.py` 中的 `agent_conf` | 删除 | 加载后从未使用 |
-| `rag/rag_service.py`、`rag/vector_store.py` 末尾的 `__main__`（"扫地机器人""迷路"） | 删除 | 原项目残留 |
+| `rag/rag_service.py` 末尾的 `__main__`（问"小户型适合哪些扫地机器人"） | 删除 | 原项目残留 |
+| `rag/vector_store.py` 末尾 `__main__` 中检索"迷路"并打印结果的几行 | 只删这几行，保留前面的 `load_document()` 调用 | 原项目残留；`python rag/vector_store.py` 是阶段 2 之前唯一的建索引入口 |
 | `data/study/weekly_reports.json` 中 `user_id` 为 `default_user` 的那条 | 删除 | 5 月 15 日模型误写 |
 | `PrimeBuddy.md`、`docs/superpowers/plans/*.md` | 移到 `docs/archive/` | 叙述和路径大多已过时；阶段 5 另写 README |
 
@@ -986,12 +987,12 @@ PrimeBuddy/
 | 现有文件 | 替换为 | 删除时机 |
 |---|---|---|
 | `requirement.txt` | `pyproject.toml` + `uv.lock` | 阶段 0 |
-| `model/factory.py` | `src/primebuddy/llm.py` | 阶段 1 |
-| `utils/config_handler.py`、`utils/logger_handler.py`、`utils/path_tool.py` | `settings.py`、`log_setup.py`、`pathlib` | 阶段 1 |
+| `model/factory.py` | `src/primebuddy/llm.py` | 阶段 2，和旧 RAG 一起删；阶段 1 起新代码只用 `llm.py` |
+| `utils/config_handler.py`、`utils/logger_handler.py`、`utils/path_tool.py`、`utils/prompt_loader.py`；`config/rag.yml`、`config/chroma.yml`、`config/prompts.yml` | `settings.py`、`log_setup.py`、`pathlib`、`config/settings.yml` | 阶段 2，同上：旧 RAG 代码（`rag_service.py`、`vector_store.py`）在此之前还依赖它们 |
 | `agent/tools/middleware.py` | 内置中间件 + `inject_context`、`metrics` | 阶段 1 |
 | `agent/tools/record_tools.py`、`mistake_tools.py`、`study_tools.py` | `src/primebuddy/tools/` + `storage/` | 阶段 1 先改接口和身份注入（存储仍读 CSV）；阶段 3 换数据库 |
 | `agent/tools/report_tools.py` | `workflows/weekly_report.py` 的 `resolve_week`、`collect` 节点；`tools/` 里的 `generate_weekly_report`、`save_weekly_report` | 阶段 1 |
-| `prompts/tutor_prompt.txt`、`planner_prompt.txt`、`mistake_prompt.txt`、`study_report_prompt.txt` | `skills/study-408/*/SKILL.md` | 阶段 1 |
+| `prompts/tutor_prompt.txt`、`planner_prompt.txt`、`mistake_prompt.txt`、`study_report_prompt.txt`，以及 16.1 中暂时保留的 `main_prompt.txt`、`report_prompt.txt` | `skills/study-408/*/SKILL.md`、`persona.md`、周报工作流 `analyze` 节点的提示词 | 阶段 1 末，和专家类一起删 |
 | `agent/study_supervisor.py`、`agent/specialists/*.py`、`tests/test_study_supervisor.py` | 主 Agent + Skills；Report 专家改为周报工作流；技能选择评测 | 阶段 1 末，v2 技能选择准确率不低于 v1 基线之后 |
 | `app.py`、`scripts/streamlit_ui_smoke.py` | `clients/streamlit_app.py`；API 端到端冒烟测试 | 阶段 1 末 |
 | `rag/rag_service.py`、`prompts/rag_summarize.txt` | `search_knowledge` 直接返回切片 | 阶段 2 |
@@ -1034,7 +1035,7 @@ PrimeBuddy/
 
 ### 阶段 1：有状态内核（约 1–1.5 周）
 
-- [ ] 1.1 `settings.py`、`log_setup.py`、`llm.py`、`observability.py`（OTel 初始化、FastAPI 埋点、LangChain 埋点方案 A），去掉 import 时的副作用。
+- [ ] 1.1 `settings.py`、`log_setup.py`、`llm.py`、`observability.py`（OTel 初始化、FastAPI 埋点、LangChain 埋点方案 A），去掉 import 时的副作用。旧的 `utils/`、`model/` 先不删（16.2）。
 - [ ] 1.2 `Context` 和新工具（`ToolRuntime` 取 user_id，带类型的参数）。存储暂时仍读写 CSV，但统一通过 `storage/` 仓储接口访问，仓储层给学习记录生成 ID。
 - [ ] 1.3 `SkillRegistry`、`load_skill`、`read_skill_file`；把 4 个专家 prompt 迁成 SKILL.md，并通过 `skills-ref validate`。
 - [ ] 1.4 `core.py` 组装主 Agent、`PrimeBuddyState` 和中间件栈（5.4），先用 `InMemorySaver`。
@@ -1051,7 +1052,7 @@ PrimeBuddy/
 - [ ] 2.1 `rag/ingest/`：迁移清洗脚本和测试，新增按页拆分、结构化切片和 metadata（8.2），补单测。
 - [ ] 2.2 `rag/index.py`：`index()` + `SQLRecordManager`；备份 `chroma_db/` 后重建索引，删除 `md5*.text`。
 - [ ] 2.3 `rag/retrieve.py`：BM25 + 向量 + RRF + rerank，加权限和科目过滤，各阶段打 OTel span。
-- [ ] 2.4 新 `search_knowledge` 按 8.4 返回；删除 `RagSummarizeService` 和 `rag_summarize.txt`；人设加入引用要求。
+- [ ] 2.4 新 `search_knowledge` 按 8.4 返回；删除 `RagSummarizeService`、`rag_summarize.txt` 和 `rag/vector_store.py`，旧 RAG 不再使用后，按 16.2 删除旧的 `utils/`、`model/` 和 `config/` 下的旧配置；人设加入引用要求。
 - [ ] 2.5 research 子 Agent。
 - [ ] 2.6 跑检索和回答评测，并做消融（分别去掉 BM25、去掉 rerank）。
 
