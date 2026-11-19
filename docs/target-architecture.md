@@ -592,7 +592,7 @@ def query_mistakes(runtime: ToolRuntime[Context], subject: str | None = None) ->
 ### 8.1 摄入管线
 
 1. **OCR**：沿用现有 OCRmyPDF 流程，产物留在本地 `data/raw/`。
-2. **清洗**：沿用 `scripts/clean_wangdao_os_ocr.py` 的规则，改成四门课共用的 `rag/ingest/clean.py`，现有单测一起迁移。
+2. **清洗**：沿用 `scripts/clean_wangdao_os_ocr.py` 的规则，改成四门课共用的 `rag/ingest/clean.py`，并补写单测。
 3. **按页拆分**：把 `[来源：…，第 N 页]` 标记解析成页码，每页一个 Document。这一步放在切片之前，解决 57% 切片没有页码的问题。
 4. **结构化切片**：先按章节标题（清洗脚本里已有的标题正则）切，过长的段落再用 `RecursiveCharacterTextSplitter` 切（起点建议 chunk 600–800 字、overlap 80–100 字，最终以检索评测为准）。切片继承所在页和章节的 metadata。
 5. **增量写入**：`langchain_core.indexing.index(docs, record_manager, vector_store, cleanup="incremental", source_id_key="source_id")`，`record_manager` 用 `SQLRecordManager`（`langchain_classic.indexes`），和业务表共用同一个数据库（9.1）。文件内容变化时自动删除旧切片，替代 `md5.text`。
@@ -957,16 +957,16 @@ PrimeBuddy/
 ├── data/primebuddy.db             # 本地 SQLite，不进 Git
 └── docs/
     ├── target-architecture.md     # 本文件
-    └── archive/                   # ← PrimeBuddy.md、docs/superpowers/plans/
+    └── todo.md                    # 任务清单
 ```
 
 ---
 
 ## 16. 现状清理清单
 
-### 16.1 可以立即删除或归档（阶段 0）
+### 16.1 可以立即删除（阶段 0，已完成）
 
-以下文件已用 grep 确认没有被主流程引用。处理完运行 `python -m unittest discover`，应仍是 19 个测试全部通过。
+以下文件已用 grep 确认没有被主流程引用。处理完运行导入与 prompt 检查和端到端冒烟（命令见 `AGENTS.md` 第二部分），确认旧系统行为不变。
 
 | 路径                                                                                                                                                            | 处理                                         | 依据                                                         |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
@@ -980,7 +980,7 @@ PrimeBuddy/
 | `rag/rag_service.py` 末尾的 `__main__`（问"小户型适合哪些扫地机器人"）                                                                                          | 删除                                         | 原项目残留                                                   |
 | `rag/vector_store.py` 末尾 `__main__` 中检索"迷路"并打印结果的几行                                                                                              | 只删这几行，保留前面的 `load_document()` 调用 | 原项目残留；`python rag/vector_store.py` 是阶段 2 之前唯一的建索引入口 |
 | `data/study/weekly_reports.json` 中 `user_id` 为 `default_user` 的那条                                                                                    | 删除                                         | 5 月 15 日模型误写                                           |
-| `PrimeBuddy.md`、`docs/superpowers/plans/*.md`                                                                                                              | 移到 `docs/archive/`                       | 叙述和路径大多已过时；阶段 5 另写 README                     |
+| `PrimeBuddy.md`、`docs/superpowers/plans/*.md`                                                                                                                  | 删除                                         | 叙述和路径大多已过时；阶段 5 另写 README                     |
 
 ### 16.2 随改造替换
 
@@ -993,12 +993,11 @@ PrimeBuddy/
 | `agent/tools/record_tools.py`、`mistake_tools.py`、`study_tools.py`                                 | `src/primebuddy/tools/` + `storage/`                                                                                                 | 阶段 1 先改接口和身份注入（存储仍读 CSV）；阶段 3 换数据库 |
 | `agent/tools/report_tools.py`                                                                           | `workflows/weekly_report.py` 的 `resolve_week`、`collect` 节点；`tools/` 里的 `generate_weekly_report`、`save_weekly_report` | 阶段 1                                                     |
 | `prompts/tutor_prompt.txt`、`planner_prompt.txt`、`mistake_prompt.txt`、`study_report_prompt.txt`，以及 16.1 中暂时保留的 `main_prompt.txt`、`report_prompt.txt` | `skills/study-408/*/SKILL.md`、`persona.md`、周报工作流 `analyze` 节点的提示词                                                           | 阶段 1 末，和专家类一起删                                  |
-| `agent/study_supervisor.py`、`agent/specialists/*.py`、`tests/test_study_supervisor.py`             | 主 Agent + Skills；Report 专家改为周报工作流；技能选择评测                                                                               | 阶段 1 末，v2 技能选择准确率不低于 v1 基线之后             |
+| `agent/study_supervisor.py`、`agent/specialists/*.py`                                                     | 主 Agent + Skills；Report 专家改为周报工作流；技能选择评测                                                                               | 阶段 1 末，v2 技能选择准确率不低于 v1 基线之后             |
 | `app.py`、`scripts/streamlit_ui_smoke.py`                                                             | `clients/streamlit_app.py`；API 端到端冒烟测试                                                                                         | 阶段 1 末                                                  |
 | `rag/rag_service.py`、`prompts/rag_summarize.txt`                                                     | `search_knowledge` 直接返回切片                                                                                                        | 阶段 2                                                     |
 | `rag/vector_store.py`、`utils/file_handler.py`                                                        | `rag/index.py`、`rag/ingest/`                                                                                                        | 阶段 2                                                     |
-| `scripts/clean_wangdao_os_ocr.py`、`tests/test_clean_wangdao_os_ocr.py`                               | `rag/ingest/clean.py` 及其测试                                                                                                         | 阶段 2（清洗逻辑保留）                                     |
-| `tests/test_mistake_tools.py`、`tests/test_report_tools.py`、`tests/test_rag_config.py`             | 新工具、仓储、工作流、RAG 模块的单测；`test_report_tools.py` 里周范围回退的用例迁到周报工作流测试                                      | 随对应模块替换                                             |
+| `scripts/clean_wangdao_os_ocr.py`                                                                         | `rag/ingest/clean.py`，并补写测试                                                                                                        | 阶段 2（清洗逻辑保留）                                     |
 | `data/study/*.csv`、`user_profile.json`、`weekly_reports.json`                                      | 数据库 + `tests/fixtures/`                                                                                                             | 阶段 3                                                     |
 
 ### 16.3 本地文件（不在 Git 中）
@@ -1024,9 +1023,9 @@ PrimeBuddy/
 
 ### 阶段 0：清理与基线（2–3 天）
 
-- [ ] 0.1 新建分支 `refactor/personal-agent`。
-- [ ] 0.2 按 16.1 删除和归档，运行单测，确认 19 个测试仍全部通过。
-- [ ] 0.3 新增 `pyproject.toml` 并锁定依赖，升级到 langchain 1.5.x，删除 `requirement.txt`，加入 `ruff` 配置；升级后重跑单测。
+- [x] 0.1 直接在 `main` 上重构，不另开分支；重构前可演示的旧版本是提交 `228bd9c`。
+- [x] 0.2 按 16.1 删除，再做导入与 prompt 检查和端到端冒烟。
+- [ ] 0.3 新增 `pyproject.toml` 并锁定依赖，升级到 langchain 1.5.x，删除 `requirement.txt`，加入 `ruff` 配置；升级后重跑导入与 prompt 检查和端到端冒烟。
 - [ ] 0.4 配置 LangSmith 环境变量，确认现有系统的运行能在 trace 里看到。
 - [ ] 0.5 建 `evals/` 骨架、`targets/v1.py`，以及第一版数据集（技能选择 60 条、检索 50 条）。
 - [ ] 0.6 跑出 v1 基线，报告提交到 `evals/reports/`。
@@ -1039,7 +1038,7 @@ PrimeBuddy/
 - [ ] 1.2 `Context` 和新工具（`ToolRuntime` 取 user_id，带类型的参数）。存储暂时仍读写 CSV，但统一通过 `storage/` 仓储接口访问，仓储层给学习记录生成 ID。
 - [ ] 1.3 `SkillRegistry`、`load_skill`、`read_skill_file`；把 4 个专家 prompt 迁成 SKILL.md，并通过 `skills-ref validate`。
 - [ ] 1.4 `core.py` 组装主 Agent、`PrimeBuddyState` 和中间件栈（5.4），先用 `InMemorySaver`。
-- [ ] 1.5 周报工作流（4.5.1）、`generate_weekly_report`、`save_weekly_report(report_id)`；单测覆盖校验回路、空数据分支、达到上限后的输出，并迁移周范围回退的用例。
+- [ ] 1.5 周报工作流（4.5.1）、`generate_weekly_report`、`save_weekly_report(report_id)`；单测覆盖校验回路、空数据分支、达到上限后的输出，并补上周范围回退的用例（逻辑沿用现有的 `resolve_report_week`）。
 - [ ] 1.6 FastAPI：threads、runs（SSE）、resume、feedback；建 `users`、`threads`、`runs`、`feedback` 表；checkpointer 切到 `AsyncSqliteSaver`；`.gitignore` 加 `data/*.db*`。
 - [ ] 1.7 Streamlit 客户端：流式显示、审批按钮、周报卡片、👍/👎、会话列表。
 - [ ] 1.8 集成测试：多轮追问、审批中断与恢复、拒绝后不写入、周报生成到保存、跨用户访问被拒、关键 span 存在。
@@ -1049,7 +1048,7 @@ PrimeBuddy/
 
 ### 阶段 2：RAG 重做（约 1 周）
 
-- [ ] 2.1 `rag/ingest/`：迁移清洗脚本和测试，新增按页拆分、结构化切片和 metadata（8.2），补单测。
+- [ ] 2.1 `rag/ingest/`：迁移清洗脚本并补写测试，新增按页拆分、结构化切片和 metadata（8.2），补单测。
 - [ ] 2.2 `rag/index.py`：`index()` + `SQLRecordManager`；备份 `chroma_db/` 后重建索引，删除 `md5*.text`。
 - [ ] 2.3 `rag/retrieve.py`：BM25 + 向量 + RRF + rerank，加权限和科目过滤，各阶段打 OTel span。
 - [ ] 2.4 新 `search_knowledge` 按 8.4 返回；删除 `RagSummarizeService`、`rag_summarize.txt` 和 `rag/vector_store.py`，旧 RAG 不再使用后，按 16.2 删除旧的 `utils/`、`model/` 和 `config/` 下的旧配置；人设加入引用要求。

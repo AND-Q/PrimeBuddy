@@ -2,20 +2,20 @@
 
 按顺序做，完成一项勾选一项。括号里是 [`target-architecture.md`](target-architecture.md) 的章节号，细节看那里；每个阶段结束后用评测复测（13）。
 
-## [ ] 阶段 0 · 清理旧代码
+## [x] 阶段 0 · 清理旧代码
 
 - **需求描述**：
   - 删掉原项目残留和没有引用的代码，旧系统行为保持不变，不影响之后要测的 v1 基线（16.1）。
 - **需要做到**：
-  - 从 main 新建分支 `refactor/personal-agent`，之后的改动都在分支上做，main 保留现在能演示的版本；
+  - ✅ 直接在 main 上重构，不另开分支；重构前可演示的旧版本是提交 `228bd9c`；
 
-  - 按 16.1 删除，`PrimeBuddy.md` 删除；
+  - ✅ 按 16.1 删除，`PrimeBuddy.md` 删除；
 
-  - 16.1 里要注意的两处：`rag/vector_store.py` 的 `__main__` 只删检索"迷路"的几行，保留 `load_document()`（目前唯一的建索引入口）；`main_prompt.txt`、`report_prompt.txt` 留到阶段 1，写人设和周报提示词时参考；
+  - ✅ 16.1 里要注意的两处：`rag/vector_store.py` 的 `__main__` 只删检索"迷路"的几行，保留 `load_document()`（目前唯一的建索引入口）；`main_prompt.txt`、`report_prompt.txt` 留到阶段 1，写人设和周报提示词时参考；
 
-  - 补写 `CLAUDE.md` 第二部分：运行、测试、建索引的命令和目录说明，之后每个阶段结束时更新；`AGENTS.md` 可以改成一行 `@CLAUDE.md`，只维护一份；
+  - ✅ 补写 `AGENTS.md` 第二部分：运行、测试、建索引的命令和目录说明，之后每个阶段结束时更新；`CLAUDE.md` 改成一行 `@AGENTS.md`，只维护一份；
 
-  - 19 个单测通过；四个专家模块能导入，保留的 5 个 prompt 都能读到（单测不覆盖这两项，命令见下）；`scripts/streamlit_ui_smoke.py` 端到端冒烟通过。
+  - ✅ 四个专家模块能导入，保留的 5 个 prompt 都能读到（命令见下）；`scripts/streamlit_ui_smoke.py` 端到端冒烟通过。旧的单元测试已删除，新测试从阶段 1 起补写。
 
     ```bash
     conda run -n agent python -c "import agent.specialists.tutor_agent, agent.specialists.planner_agent, agent.specialists.mistake_agent, agent.specialists.report_agent; from utils import prompt_loader as p; [f() for f in (p.load_rag_prompts, p.load_tutor_prompts, p.load_planner_prompts, p.load_mistake_prompts, p.load_study_report_prompts)]; print('imports and prompts ok')"
@@ -90,7 +90,7 @@
   - 校验不通过（引用了不存在的记录，或下周计划超出可用时长）时打回重写，最多 3 次；当周没有记录时不调用模型；
   - 聊天里用 `generate_weekly_report` 生成，`save_weekly_report(report_id)` 保存原文，审批只有批准和拒绝；
   - `analyze` 节点的提示词参考 `study_report_prompt.txt` 和 `report_prompt.txt`；
-  - 单测覆盖校验回路、空数据分支和达到 3 次上限后的输出，原有的周范围回退用例迁过来。
+  - 单测覆盖校验回路、空数据分支和达到 3 次上限后的输出，补上周范围回退的用例（逻辑沿用现有的 `resolve_report_week`）。
 
 ## [ ] 阶段 1 · FastAPI 服务层
 
@@ -125,7 +125,7 @@
 - **需求描述**：
   - 重做切片，每个切片带科目、章节和页码；文件更新时自动清理旧切片（8.1、8.2）。
 - **需要做到**：
-  - 清洗脚本和测试迁到 `rag/ingest/`，先按页拆分再按章节切片，metadata 字段按 8.2；
+  - 清洗脚本迁到 `rag/ingest/` 并补写测试，先按页拆分再按章节切片，metadata 字段按 8.2；
   - 用 `index()` + `SQLRecordManager` 写入，替代 `md5.text`，建索引入口改为 `scripts/ingest_kb.py`；
   - 先备份 `chroma_db/` 再重建，清掉旧集合和没有集合引用的索引目录；重建后每个切片都有页码。
 

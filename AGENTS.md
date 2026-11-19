@@ -79,7 +79,7 @@ This file provides guidance to agents when working with code in this repository.
 
 ## 1. 当前状态
 - PrimeBuddy 是面向 408 考研的 Streamlit + LangChain 多 Agent RAG 应用，正在重构为通用个人 Agent。
-- 重构在分支 `refactor/personal-agent` 上进行，`main` 保留可演示的旧版本。
+- 重构直接在 `main` 上进行，不另开分支。重构前可演示的旧版本是提交 `228bd9c`。
 - 目标设计见 `docs/target-architecture.md`，任务顺序见 `docs/todo.md`。动手前先读对应章节；新代码按设计第 15 节放进 `src/primebuddy/`。
 - 旧模块按设计 16.2 的时机删除，不要提前删：`utils/`、`model/`、`config/*.yml` 到阶段 2 才删（旧 RAG 依赖它们）；`prompts/main_prompt.txt`、`prompts/report_prompt.txt` 已不被加载，保留给阶段 1 参考。
 
@@ -102,7 +102,7 @@ conda run -n agent python -c "import agent.specialists.tutor_agent, agent.specia
 # 端到端冒烟：用真实模型跑 4 个演示问题（约 3 分钟），并检查没有写入错题和周报数据
 conda run -n agent python scripts/streamlit_ui_smoke.py
 ```
-- 目前没有单元测试：旧测试已在重构分支删除，新测试从阶段 1 起按设计 14.3 补写。在此之前，改动后至少跑导入与 prompt 检查；涉及模型调用、工具或 RAG 的改动再跑端到端冒烟。
+- 目前没有单元测试：旧测试已删除，新测试从阶段 1 起按设计 14.3 补写。在此之前，改动后至少跑导入与 prompt 检查；涉及模型调用、工具或 RAG 的改动再跑端到端冒烟。
 
 ## 4. 代码结构（旧系统）
 - 调用链：`app.py` → `agent/study_supervisor.py`（关键词路由，专家按需创建）→ `agent/specialists/`（4 个专家，`create_agent` + `agent/tools/middleware.py`）→ `agent/tools/`（检索、学习记录、错题、周报工具）。
