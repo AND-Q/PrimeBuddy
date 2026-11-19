@@ -111,13 +111,3 @@ if __name__ == '__main__':
     vs = VectorStoreService()
 
     vs.load_document()
-
-    retriever = vs.get_retriever()
-
-    res = retriever.invoke("迷路")
-    
-    for r in res:
-        print(r.page_content)
-        print("-"*20)
-
-

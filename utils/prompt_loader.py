@@ -17,20 +17,8 @@ def _load_prompt(config_key: str, label: str) -> str:
         raise e
 
 
-def load_system_prompts():
-    return _load_prompt("main_prompt_path", "load_system_prompts")
-
-
 def load_rag_prompts():
     return _load_prompt("rag_summarize_prompt_path", "load_rag_prompts")
-
-
-def load_report_prompts():
-    return _load_prompt("report_prompt_path", "load_report_prompts")
-
-
-def load_supervisor_prompts():
-    return _load_prompt("supervisor_prompt_path", "load_supervisor_prompts")
 
 
 def load_tutor_prompts():
@@ -47,7 +35,3 @@ def load_mistake_prompts():
 
 def load_study_report_prompts():
     return _load_prompt("study_report_prompt_path", "load_study_report_prompts")
-
-
-if __name__ == '__main__':
-    print(load_report_prompts())

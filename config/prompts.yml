@@ -1,7 +1,4 @@
-main_prompt_path: prompts/main_prompt.txt
 rag_summarize_prompt_path: prompts/rag_summarize.txt
-report_prompt_path: prompts/report_prompt.txt
-supervisor_prompt_path: prompts/supervisor_prompt.txt
 tutor_prompt_path: prompts/tutor_prompt.txt
 planner_prompt_path: prompts/planner_prompt.txt
 mistake_prompt_path: prompts/mistake_prompt.txt
