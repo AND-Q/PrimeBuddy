@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) and other coding age
 - 如果有不清楚之处，请停下来，指出困惑所在并询问。
 
 ## 2. 简单优先
-**用最少的代码解决问题。不做推测性设计。**![1795104343400](image/CLAUDE/1795104343400.png)
+**用最少的代码解决问题。不做推测性设计。**
 - 不添加要求之外的功能。
 - 不为只使用一次的代码创建抽象。
 - 不增加未被要求的“灵活性”或“可配置性”。
