@@ -85,7 +85,7 @@ This file provides guidance to Claude Code (claude.ai/code) and other coding age
 
 ## 2. 环境
 - 依赖在 `pyproject.toml` 中声明，版本锁定在 `uv.lock`；Python 3.11（`.python-version`）。`uv sync` 安装到项目的 `.venv/`，命令统一用 `uv run <command>`。增删依赖用 `uv add` / `uv remove`，不要手改 `uv.lock`。
-- 环境变量：`MY_API_KEY`、`MY_BASE_URL`（OpenAI 兼容接口），`DASHSCOPE_API_KEY`（Embedding）。聊天模型名只从 `config/rag.yml` 的 `chat_model_name` 读取，环境变量 `MY_MODEL` 不生效。
+- 环境变量：`MY_API_KEY`、`MY_BASE_URL`（OpenAI 兼容接口），`DASHSCOPE_API_KEY`（Embedding），`LANGSMITH_TRACING`、`LANGSMITH_API_KEY`、`LANGSMITH_PROJECT`（LangSmith 追踪，项目 `primebuddy`）。聊天模型名只从 `config/rag.yml` 的 `chat_model_name` 读取，环境变量 `MY_MODEL` 不生效。
 - 环境变量写在用户的 `~/.zshrc` 里，Agent 的终端可能还是旧值。需要调用模型时用 `zsh -lic '<command>'` 加载；不要打印 key 的值。
 
 ## 3. 常用命令
