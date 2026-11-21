@@ -1,0 +1,60 @@
+{"id": "ss-001", "query": "请用 408 考研的角度讲一下操作系统中的虚拟内存，并说明常见考点。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["golden", "e2e", "standard"]}
+{"id": "ss-002", "query": "请解释一下计算机组成原理中 Cache 直接映射、全相联映射和组相联映射的区别。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["e2e", "standard"]}
+{"id": "ss-003", "query": "数据结构的 KMP 算法原理是什么，next 数组常见考法有哪些？", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["e2e", "standard"]}
+{"id": "ss-004", "query": "请讲一下计算机网络中 TCP 三次握手和四次挥手的流程与高频考点。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["e2e", "standard"]}
+{"id": "ss-005", "query": "死锁和饥饿老是搞混，能通俗顺一遍顺便说说真题爱怎么坑人吗？", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-006", "query": "帮我梳理下计网里 ARP 和 DNS 的工作过程，还有它们在各层怎么配合。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-007", "query": "操作系统的银行家算法概念和判定安全序列的流程是什么？", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["standard"]}
+{"id": "ss-008", "query": "讲一下红黑树和 AVL 树在 408 里的核心区别和常考知识点。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["standard"]}
+{"id": "ss-009", "query": "能不能给我掰扯掰扯 CPU 流水线的数据冒险和旁路转发到底咋回事？", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["colloquial"]}
+{"id": "ss-010", "query": "补码加减法双符号位判溢出那块我看教材没太懂，举个例子带我过一遍吧。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["colloquial"]}
+{"id": "ss-011", "query": "解释一下操作系统中进程与线程的本质区别，以及用户级线程和内核级线程的特点。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["standard"]}
+{"id": "ss-012", "query": "B 树和 B+ 树为什么数据库索引都喜欢用 B+ 树？考场上怎么答？", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["colloquial"]}
+{"id": "ss-013", "query": "CSMA/CD 协议里的争用期和最小帧长是什么关系，给道典型例题。", "expected_any": ["explain-408"], "category": "explain-408", "tags": ["standard"]}
+{"id": "ss-014", "query": "讲讲死锁", "expected_any": ["explain-408", "none"], "category": "explain-408", "tags": ["colloquial"]}
+{"id": "ss-015", "query": "我还有 8 周考 408，每天能学 3 小时，操作系统和计网比较弱，帮我制定下周计划。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["golden", "e2e", "standard"]}
+{"id": "ss-016", "query": "我每天工作日只能学 2 小时，周末能学 6 小时，帮我安排一下接下来两周的 408 复习规划。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["e2e", "standard"]}
+{"id": "ss-017", "query": "408 目标分 120，目前数据结构一轮刷完但计组很弱，接下来一个月怎么学比较稳？", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["e2e", "standard"]}
+{"id": "ss-018", "query": "最后一个月冲刺阶段，每天复习 4 小时，帮我规划四门课的真题和模拟题进度安排。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["e2e", "standard"]}
+{"id": "ss-019", "query": "计组太拖后腿了，离上考场剩俩月，下礼拜我该把精力往哪儿放？", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-020", "query": "这周事情有点多时间紧，帮我排一下接下来七天四门课的先后顺序。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-021", "query": "请结合我的学习记录和薄弱科目，制定一份下周的复习计划。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["standard"]}
+{"id": "ss-022", "query": "我晚上 7 点后才能看书，大概能挤出俩半小时，明天起四科咋分配合适？", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["colloquial"]}
+{"id": "ss-023", "query": "现在刚把王道四本书过完一遍，想在两个月内把错题清零并刷完十年真题，求个路线。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["colloquial"]}
+{"id": "ss-024", "query": "帮我调整一下复习进度，最近操作系统花太多时间，计网完全落下了。", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["standard"]}
+{"id": "ss-025", "query": "每天只有 3 小时备考 408，如何在保证数据结构手感的同时把计组短板补起来？", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["standard"]}
+{"id": "ss-026", "query": "离考试就剩 30 天了，真题还没刷完，能帮我列个每天该干啥的清单吗？", "expected_any": ["study-plan"], "category": "study-plan", "tags": ["colloquial"]}
+{"id": "ss-027", "query": "我做错了一道题：TCP 拥塞控制中慢开始和拥塞避免的区别是什么？我把阈值变化理解错了，帮我分析原因并给复习建议。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["golden", "e2e", "standard"]}
+{"id": "ss-028", "query": "这道操作系统页面置换算法题我选错了：改进型 CLOCK 扫描顺序我记反了，正确答案应该是先找(0,0)，帮我分析错因。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["e2e", "standard"]}
+{"id": "ss-029", "query": "我在刷计组 Cache 映射题时算错了标记位位数，没减去块内偏移，帮我复盘一下这类错题并查查以前有没有类似错题。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["e2e", "standard"]}
+{"id": "ss-030", "query": "这道数据结构堆排序的选择题我做错了，我以为建初堆是 O(n log n)，正确答案是 O(n)，帮我分析为什么错。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["e2e", "standard"]}
+{"id": "ss-031", "query": "我刚刷的一道 B+ 树题目选了 C，结果答案给的 B，没想通我卡哪儿了。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-032", "query": "这道虚拟内存的题我选错了，把缺页中断和普通外中断混在一起了，能帮我看看咋回事不？", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-033", "query": "帮我看看我之前的错题记录，哪些知识点最容易反复踩坑需要二刷？", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["standard"]}
+{"id": "ss-034", "query": "一道关于快表 TLB 和页表访问次数的题，我算出来少了 1 次访存，帮我诊断下哪步逻辑断了。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["colloquial"]}
+{"id": "ss-035", "query": "子网划分那道大题我把广播地址也算进可用主机数里了，总在这种小地方丢分，怎么改？", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["colloquial"]}
+{"id": "ss-036", "query": "这道 DMA 周期挪用和程序中断的对比题我不会做，感觉两个都会打断 CPU，帮我理一下错因。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["standard"]}
+{"id": "ss-037", "query": "帮我查一下操作系统相关的历史错题，总结一下我的主要错因类型。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["standard"]}
+{"id": "ss-038", "query": "我算 IEEE 754 单精度浮点数的时候阶码忘了加 127 偏置值，结果全偏了，帮我分析这道错题。", "expected_any": ["mistake-review"], "category": "mistake-review", "tags": ["standard"]}
+{"id": "ss-039", "query": "请生成我的本周学习报告，指出主要问题和下周重点。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["golden", "e2e", "standard"]}
+{"id": "ss-040", "query": "帮我出一份本周的学习周报，统计各科投入时长和错题情况。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["e2e", "standard"]}
+{"id": "ss-041", "query": "总结一下我这周的 408 学习情况，看看哪科任务完成率偏低，给出下周重点。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["e2e", "standard"]}
+{"id": "ss-042", "query": "请根据我的学习记录和错题数据做一次本周阶段复盘，生成学习报告。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["e2e", "standard"]}
+{"id": "ss-043", "query": "最近七天学得怎么样，帮我盘点一下数据顺便给点下阶段的建议。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-044", "query": "帮我看看这周刷题和学习情况，写个小复盘。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["colloquial_review", "colloquial"]}
+{"id": "ss-045", "query": "给我拉一份阶段报告，看看我这段时间的总学时、错题分布和薄弱环节。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["standard"]}
+{"id": "ss-046", "query": "礼拜天了，帮我核算下过去一星期各科花了多久、哪些题老错，下礼拜重点抓哪块。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["colloquial"]}
+{"id": "ss-047", "query": "这周学完感觉挺虚的，帮我基于记录复盘一下本周达成情况。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["standard"]}
+{"id": "ss-048", "query": "帮我把最近一周的学习数据和错题合一起做个体检报告，不要保存。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["colloquial"]}
+{"id": "ss-049", "query": "把 2026-05-11 到 2026-05-17 那一周的周报重新整理给我看下。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["standard"]}
+{"id": "ss-050", "query": "帮我汇总这段时间的学习成果和主要短板，输出阶段总结。", "expected_any": ["weekly-report"], "category": "weekly-report", "tags": ["standard"]}
+{"id": "ss-051", "query": "你好呀", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-052", "query": "你是谁？你能帮我做什么？", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-053", "query": "谢谢你的解答，很有帮助！", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-054", "query": "今天学了一天好累，稍微歇会儿和你聊两句。", "expected_any": ["none"], "category": "none", "tags": ["colloquial"]}
+{"id": "ss-055", "query": "今天有点焦虑，感觉还有好多东西没看完，给我打打气吧。", "expected_any": ["none"], "category": "none", "tags": ["colloquial"]}
+{"id": "ss-056", "query": "考研 408 满分是多少分？考试时长几个小时？", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-057", "query": "帮我用 Python 写一个读取 CSV 文件并去重的小脚本。", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-058", "query": "你能记住我上次说过的偏好吗？", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-059", "query": "北京今天天气怎么样？", "expected_any": ["none"], "category": "none", "tags": ["standard"]}
+{"id": "ss-060", "query": "太棒了，那我先去吃饭，晚上回来接着问你。", "expected_any": ["none"], "category": "none", "tags": ["colloquial"]}

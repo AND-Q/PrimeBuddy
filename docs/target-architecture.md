@@ -1027,8 +1027,8 @@ PrimeBuddy/
 - [X] 0.2 按 16.1 删除，再做导入与 prompt 检查和端到端冒烟。
 - [X] 0.3 新增 `pyproject.toml` 并锁定依赖，升级到 langchain 1.5.x，删除 `requirement.txt`，加入 `ruff` 配置；升级后重跑导入与 prompt 检查和端到端冒烟。
 - [X] 0.4 配置 LangSmith 环境变量，确认现有系统的运行能在 trace 里看到。
-- [ ] 0.5 建 `evals/` 骨架、`targets/v1.py`，以及第一版数据集（技能选择 60 条、检索 50 条）。
-- [ ] 0.6 跑出 v1 基线，报告提交到 `evals/reports/`。
+- [X] 0.5 建 `evals/` 骨架、`targets/v1.py`，以及第一版数据集（技能选择 60 条、检索 50 条）。
+- [X] 0.6 跑出 v1 基线，报告提交到 `evals/reports/`。
 
 完成标志：仓库里没有原项目残留；基线报告包含技能选择准确率、Recall@5、MRR@10、P50 延迟、每次问答的模型调用次数。
 

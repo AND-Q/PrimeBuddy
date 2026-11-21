@@ -1,0 +1,50 @@
+{"id": "rt-001", "query": "用户态和核心态如何切换，哪些指令只能在核心态执行？", "subject": "操作系统", "gold_pages": [26, 27, 29, 30], "tags": ["standard"]}
+{"id": "rt-002", "query": "操作系统中线程和进程有什么区别，为什么引入线程能降低切换开销？", "subject": "操作系统", "gold_pages": [56, 57], "tags": ["standard"]}
+{"id": "rt-003", "query": "多级反馈队列调度算法是怎么兼顾短作业和高响应的？", "subject": "操作系统", "gold_pages": [84, 85], "tags": ["colloquial"]}
+{"id": "rt-004", "query": "信号量机制中 wait 和 signal 原语如何实现进程互斥和同步？", "subject": "操作系统", "gold_pages": [110, 111, 112], "tags": ["standard"]}
+{"id": "rt-005", "query": "管程由哪几部分组成，条件变量和信号量有什么不同？", "subject": "操作系统", "gold_pages": [121, 122, 123], "tags": ["standard"]}
+{"id": "rt-006", "query": "系统发生死锁必须同时满足哪四个必要条件，资源分配图有环就一定死锁吗？", "subject": "操作系统", "gold_pages": [160, 161], "tags": ["standard"]}
+{"id": "rt-007", "query": "银行家算法怎么检查安全性，请求资源后如何判断存在安全序列？", "subject": "操作系统", "gold_pages": [163, 164, 165], "tags": ["standard"]}
+{"id": "rt-008", "query": "加了快表 TLB 以后逻辑地址转物理地址要访存几次，查表步骤是啥？", "subject": "操作系统", "gold_pages": [197, 198], "tags": ["colloquial"]}
+{"id": "rt-009", "query": "请求分页系统中缺页中断的处理流程是什么？", "subject": "操作系统", "gold_pages": [225, 226], "tags": ["standard"]}
+{"id": "rt-010", "query": "改进型 CLOCK 页面置换算法怎么按访问位和修改位筛选淘汰页面？", "subject": "操作系统", "gold_pages": [230, 231], "tags": ["standard"]}
+{"id": "rt-011", "query": "为什么页面老是换入换出发生颠簸，工作集大小和分配物理块数有什么关系？", "subject": "操作系统", "gold_pages": [231, 232], "tags": ["colloquial"]}
+{"id": "rt-012", "query": "UNIX 文件系统为什么把文件名和描述信息拆开，用索引节点 inode 有什么好处？", "subject": "操作系统", "gold_pages": [264], "tags": ["colloquial"]}
+{"id": "rt-013", "query": "SPOOLing 假脱机技术怎么把独占的打印机改造成共享设备？", "subject": "操作系统", "gold_pages": [335, 336, 337], "tags": ["colloquial"]}
+{"id": "rt-014", "query": "数据链路层滑动窗口机制里，停止等待、GBN 和选择重传的窗口大小有什么关系？", "subject": "计算机网络", "gold_pages": [77, 78, 79], "tags": ["standard"]}
+{"id": "rt-015", "query": "以太网 CSMA/CD 协议中的争用期 2τ 是怎么来的，检测到碰撞后怎么退避？", "subject": "计算机网络", "gold_pages": [97, 98, 99], "tags": ["standard"]}
+{"id": "rt-016", "query": "VLAN 虚拟局域网怎么隔离广播域，802.1Q 帧标签插在以太网帧哪里？", "subject": "计算机网络", "gold_pages": [119, 120], "tags": ["standard"]}
+{"id": "rt-017", "query": "CIDR 无分类编址怎么把多个子网路由聚合在一起，转发表最长前缀匹配怎么查？", "subject": "计算机网络", "gold_pages": [157, 158, 159], "tags": ["standard"]}
+{"id": "rt-018", "query": "主机知道目的 IP 却不知道 MAC 地址时，ARP 怎么广播查询并写入缓存？", "subject": "计算机网络", "gold_pages": [160, 161], "tags": ["colloquial"]}
+{"id": "rt-019", "query": "新连入局域网的电脑怎么通过 DHCP 自动拿到 IP 地址和默认网关？", "subject": "计算机网络", "gold_pages": [162], "tags": ["colloquial"]}
+{"id": "rt-020", "query": "RIP 距离向量路由协议为什么规定跳数上限是 15，坏消息传播得慢怎么回事？", "subject": "计算机网络", "gold_pages": [199, 200, 201], "tags": ["colloquial"]}
+{"id": "rt-021", "query": "OSPF 协议如何用洪泛法交换链路状态，为什么要划分区域？", "subject": "计算机网络", "gold_pages": [201, 202], "tags": ["standard"]}
+{"id": "rt-022", "query": "自治系统之间为什么不用 OSPF 而要用 BGP，BGP 为什么只找较好路由不找最短？", "subject": "计算机网络", "gold_pages": [202, 203, 204], "tags": ["colloquial"]}
+{"id": "rt-023", "query": "TCP 建立连接三次握手中 SYN、ACK 和序号确认号分别怎么变化？", "subject": "计算机网络", "gold_pages": [245, 246], "tags": ["standard"]}
+{"id": "rt-024", "query": "TCP 断开连接四次挥手的过程是怎样的，客户端为什么还要等 TIME-WAIT？", "subject": "计算机网络", "gold_pages": [246, 247], "tags": ["colloquial"]}
+{"id": "rt-025", "query": "TCP 拥塞控制中慢开始、拥塞避免和快重传快恢复的拥塞窗口和门限怎么变？", "subject": "计算机网络", "gold_pages": [250, 251, 252, 253], "tags": ["standard"]}
+{"id": "rt-026", "query": "浏览器解析域名时，DNS 递归查询和迭代查询有什么区别？", "subject": "计算机网络", "gold_pages": [279, 280], "tags": ["colloquial"]}
+{"id": "rt-027", "query": "补码加减运算怎么用双符号位（模 4 补码）判断是否发生正溢出或负溢出？", "subject": "计算机组成原理", "gold_pages": [54, 55], "tags": ["standard"]}
+{"id": "rt-028", "query": "IEEE 754 单精度浮点数的阶码偏置值、尾数隐藏位和表示范围是什么？", "subject": "计算机组成原理", "gold_pages": [69, 70, 71], "tags": ["standard"]}
+{"id": "rt-029", "query": "DRAM 为什么必须定期刷新，集中刷新、分散刷新和异步刷新各自有什么特点？", "subject": "计算机组成原理", "gold_pages": [99], "tags": ["standard"]}
+{"id": "rt-030", "query": "多体低位交叉编址存储器为什么能像流水线一样提高主存带宽？", "subject": "计算机组成原理", "gold_pages": [103, 104], "tags": ["colloquial"]}
+{"id": "rt-031", "query": "Cache 和主存的直接映射、全相联映射、组相联映射的地址结构怎么划分？", "subject": "计算机组成原理", "gold_pages": [131, 132, 133, 134], "tags": ["standard"]}
+{"id": "rt-032", "query": "Cache 写命中时全写法和回写法有什么区别，写不命中怎么配合写分配法？", "subject": "计算机组成原理", "gold_pages": [136, 137], "tags": ["standard"]}
+{"id": "rt-033", "query": "指令系统里相对寻址怎么用 PC 和偏移量算目标地址，为什么适合程序浮动？", "subject": "计算机组成原理", "gold_pages": [179, 180], "tags": ["colloquial"]}
+{"id": "rt-034", "query": "RISC 和 CISC 指令集体系结构有哪些主要区别？", "subject": "计算机组成原理", "gold_pages": [214, 215], "tags": ["standard"]}
+{"id": "rt-035", "query": "硬布线控制器和微程序控制器在实现原理、速度和可扩展性上有什么区别？", "subject": "计算机组成原理", "gold_pages": [248, 249, 250], "tags": ["standard"]}
+{"id": "rt-036", "query": "CPU 指令流水线遇到结构冒险、数据冒险和控制冒险分别怎么解决？", "subject": "计算机组成原理", "gold_pages": [267, 268, 269], "tags": ["standard"]}
+{"id": "rt-037", "query": "总线的同步定时、异步定时和分离式定时方式有什么区别？", "subject": "计算机组成原理", "gold_pages": [303, 304, 305], "tags": ["standard"]}
+{"id": "rt-038", "query": "DMA 传送方式里的周期挪用和 CPU 交替访存有什么区别，DMA 控制器怎么接管总线？", "subject": "计算机组成原理", "gold_pages": [325, 326, 327], "tags": ["colloquial"]}
+{"id": "rt-039", "query": "KMP 字符串匹配算法为什么主串指针不回退，next 数组和 nextval 怎么推？", "subject": "数据结构", "gold_pages": [131, 132, 133, 134, 135], "tags": ["standard"]}
+{"id": "rt-040", "query": "线索二叉树怎么利用空指针存放前驱后继，中序线索化怎么找后继结点？", "subject": "数据结构", "gold_pages": [165, 166, 167], "tags": ["standard"]}
+{"id": "rt-041", "query": "哈夫曼树的带权路径长度 WPL 怎么算，为什么哈夫曼编码满足前缀编码性质？", "subject": "数据结构", "gold_pages": [205, 206], "tags": ["standard"]}
+{"id": "rt-042", "query": "求最小生成树的 Prim 算法和 Kruskal 算法思想和时间复杂度有什么不同？", "subject": "数据结构", "gold_pages": [253, 254, 255], "tags": ["standard"]}
+{"id": "rt-043", "query": "单源最短路径 Dijkstra 算法怎么维护 dist 数组，为什么不能处理负权边？", "subject": "数据结构", "gold_pages": [256, 257], "tags": ["colloquial"]}
+{"id": "rt-044", "query": "Floyd 算法求任意两点间最短路径的状态转移过程和矩阵迭代怎么做？", "subject": "数据结构", "gold_pages": [257, 258], "tags": ["standard"]}
+{"id": "rt-045", "query": "AOE 网里怎么求关键活动和关键路径，缩短关键活动一定能缩短工期吗？", "subject": "数据结构", "gold_pages": [262, 263], "tags": ["colloquial"]}
+{"id": "rt-046", "query": "AVL 平衡二叉树插入失衡后，LL、RR、LR、RL 四种旋转分别怎么调平？", "subject": "数据结构", "gold_pages": [308, 309, 310], "tags": ["standard"]}
+{"id": "rt-047", "query": "红黑树满足哪几条性质，黑高和树高的上界有什么关系？", "subject": "数据结构", "gold_pages": [312, 313], "tags": ["standard"]}
+{"id": "rt-048", "query": "B 树插入分裂删除借键是怎么做的，B+ 树和 B 树在叶子结点关键字上有啥不一样？", "subject": "数据结构", "gold_pages": [334, 335, 336], "tags": ["colloquial"]}
+{"id": "rt-049", "query": "散列表开放定址法里线性探测为什么容易聚集，查找失败的平均长度怎么算？", "subject": "数据结构", "gold_pages": [345, 346, 347], "tags": ["colloquial"]}
+{"id": "rt-050", "query": "快速排序一趟划分如何确定枢轴元素的最终位置，最好和最坏时间复杂度分别是多少？", "subject": "数据结构", "gold_pages": [370, 371, 372], "tags": ["colloquial"]}
